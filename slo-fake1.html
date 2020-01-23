@@ -1,0 +1,998 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Povprečna Plača</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="">
+    <meta name="description" content="Spletna stran Rokodelstva Baša">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="icon" href="Images/Icon2.jpg">
+    <script src="index.js"></script>
+	<link rel="stylesheet" href="index.css">
+	<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+	<script src="https://code.jquery.com/jquery-3.2.1.min.js" type="text/javascript"></script>
+  <!-- End Jquery -->
+
+  <!-- Map scripts - add the below to your page -->
+  <!-- jsmaps-panzoom.js is optional if you are using enablePanZoom -->
+  <link href="jsmaps/jsmaps.css" rel="stylesheet" type="text/css" />
+  <script src="jsmaps/jsmaps-libs.js" type="text/javascript"></script>
+  <script src="jsmaps/jsmaps-panzoom.js"></script>
+  <script src="jsmaps/jsmaps.min.js" type="text/javascript"></script>
+  <script src="maps/slovenia.js" type="text/javascript"></script>
+  <!-- End Map scripts -->
+  <style>
+
+body {
+  font: 14px Montserrat;
+  align:center;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3.5px;
+}
+.linee {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3.5px;
+}
+
+.dot {
+  stroke: #000;
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 100px;                  
+  height: 50px;                 
+  padding: 4px;             
+  font: 16px Montserrat;  
+  color: white;   
+  font-weight: 500;   
+  background: black;   
+  border: 0px;      
+  border-radius: 4px;           
+  pointer-events: none;         
+}
+
+/* http://www.d3noob.org/2013/01/adding-grid-lines-to-d3js-graph.html */
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+
+
+	
+	
+	
+	
+* {
+  box-sizing: border-box;
+}
+
+/*the container must be positioned relative:*/
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+  cursor: pointer;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #e9e9e9; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+</style>
+</head>
+<body>  
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-primary">
+    <div class="container-fluid">
+            <div class="navbar-header align-middle">
+                <button class="collapsed navbar-toggler align-middle" type="button" data-toggle="collapse" data-target="#navbarMenu" onclick="resize_body_padding();">
+                    <span> </span>
+            <span> </span>
+            <span> </span>    
+                </button>
+                <a href="#" class="navbar-brand align-middle">
+                    <h3>Povprečna plača</h3>
+                </a>
+                <div class="logo align-middle">
+                        <img src="Images/Icon2.jpg" height="40" alt="EURO" class="logo"/>
+                </div>
+              </div>
+                <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class = "nav navbar-nav">
+                <li><a class="nav-link" href="index3.html"><button id="domov" class="btn btn-info">DOMOV</button></a></li>
+                
+                <li><a class="nav-link" href="test.html" ><button class="btn btn-info">DEJAVNOSTI</button></a></li>
+				<li><a class="nav-link" href="slo-fake1.html"><button id="regije" class="btn btn-info">OBČINE</button></a></li>
+                <li><a class="nav-link" href="slo-fake.html"><button class="btn btn-info">PRIMERJAJ OBČINE</button></a></li>
+            </ul>
+        </div>
+      </div>
+    </nav>
+    
+       
+	   
+	   <div class="container" style="max-height: 500px; height: 400px; float: none;">
+      <div class="row">
+        <div class="col-md-12 col-lg-12 col-xl-12 col-sm-12 col-xs-12 col-centered center-block">
+    <!-- Map html - add the below to your page -->
+    <div class="jsmaps-wrapper" id="slovenia-map" style=""></div>
+  </div>
+</div>
+    <!-- End Map html -->
+</div>
+  <div class="container-fluid" id="bot" style="margin: 20px auto; margin-top:50px auto; visibility: hidden;">
+      <div class="row w-100">
+    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+      <div class="card">
+        <div class="card-body" id="c">
+          <div class="svg-container">
+          <svg id="chart">
+    </svg>
+  </div>
+  </div>
+</div>
+</div>
+  
+
+    <div class="col-md-12 col-lg-6 col-xl-6 col-sm-12 col-xs-12">
+      <div class="card">
+        <div class="card-body" id="c2">
+          <div class="svg-container">
+          <svg class="chart2">
+    </svg>
+  </div>
+  </div>
+</div>
+</div>
+</div>
+</div>
+
+
+<script src="https://d3js.org/d3.v3.js"></script>
+  
+
+  
+  
+  
+  <script type="text/javascript">   
+	 var tmp=0;
+  var mesto="";
+  var mestoo="";
+
+  $('#slovenia-map').JSMaps({
+    map: 'slovenia',
+    enablePanZoom: true,
+    onReady: function() {
+      $('#slovenia-map-select').on('change', function() {
+        $('#slovenia-map').trigger('stateClick', this.value);
+      });
+    },
+    onStateClick: function(data1) {
+      if (event.type == 'click') { // or if event.target.tagName is path/circle
+        mesto = data1.name;
+        d3.selectAll("g").remove();
+        d3.selectAll("text").remove();
+        document.getElementById('bot').style.visibility = 'visible';
+		
+		console.log(mesto);
+
+//I increased the bottom margin a little bit because the x label is tied to it; so I could lower the x label a little bit
+var width = document.getElementById("c").clientWidth;
+var height = document.getElementById("c").clientHeight;
+
+var margin = {top: 50, right: 70, bottom: 90, left: 70},
+    width = width - margin.left - margin.right,
+    height = height - margin.top - margin.bottom;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+	.ticks(d3.date)
+	//makes the xAxis ticks a little longer than the xMinorAxis ticks
+    .tickSize(15)
+    .orient("bottom");
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d[mesto]); });
+
+
+var div = d3.select("body").append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//The format in the CSV, which d3 will read
+var parseDate = d3.time.format("%Y");
+
+//format for tooltip
+//https://github.com/mbostock/d3/wiki/Time-Formatting
+//var formatTime = d3.time.format("%e %b");
+var formatTime = d3.time.format("%e %b %-I:%M %p");
+var formatCount = d3.format(",");
+
+// function for the y grid lines
+function make_y_axis() {
+  return d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(5)
+}
+
+svg.append("circle").attr("cx",20).attr("cy",40).attr("r", 6).style("fill", "orange")
+svg.append("text").attr("x", 40).attr("y", 40).text(mesto).style("font-size", "15px").attr("alignment-baseline","middle")
+
+//reading in CSV which contains data
+console.log(mesto);
+d3.csv("cas.csv", function(error, data) {
+  data.forEach(function(d) {
+    console.log(d.time)
+    d.date = parseDate.parse(d.time);
+	console.log(d.date);
+    d[mesto] = +d[mesto];
+    console.log(d[mesto]);
+  });
+
+  //using imported data to define extent of x and y domains
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  y.domain(d3.extent(
+        [].concat(data.map(function(d) { 
+            return parseFloat(d[mesto]); 
+        }), data.map(function(d) { 
+            return parseFloat(d[mestoo]);
+        }))));
+
+// Draw the y Grid lines
+	svg.append("g")            
+		.attr("class", "grid")
+		.call(make_y_axis()
+			.tickSize(-width, 0, 0)
+			.tickFormat("")
+		)
+  
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line)
+	  .style("stroke", "orange");
+
+//taken from http://bl.ocks.org/mbostock/3887118
+//and http://www.d3noob.org/2013/01/change-line-chart-into-scatter-plot.html
+//creating a group(g) and will append a circle and 2 lines inside each group
+var g = svg.selectAll()
+        .data(data).enter().append("g");
+
+   //The markers on the line
+	 g.append("circle")
+         //circle radius is increased
+        .attr("r", 8)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d[mesto]); });
+   
+   //The horizontal dashed line that appears when a circle marker is moused over
+	 g.append("line")
+        .attr("class", "x")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mesto]); })
+		    //d3.min gets the min date from the date x-axis scale
+		    .attr("x2", function(d) { return x(d3.min(x)); })
+        .attr("y2", function(d) { return y(d[mesto]); });
+
+  //The vertical dashed line that appears when a circle marker is moused over
+	g.append("line")
+        .attr("class", "y")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mesto]); })
+		    .attr("x2", function(d) { return x(d.date); })
+        .attr("y2", height);
+    
+   //circles are selected again to add the mouseover functions
+ 	 g.selectAll("circle")
+			.on("mouseover", function(d) {		
+            div.transition()		
+               .duration(200)		
+               .style("opacity", .9);	
+            div.html(formatCount(d[mesto]) + " € " + "Leto: " +d.time)	
+               .style("left", (d3.event.pageX - 20) + "px")
+      		     .style("top", (d3.event.pageY + 6) + "px");
+	          //selects the horizontal dashed line in the group
+			      d3.select(this.nextElementSibling).transition()		
+                .duration(200)		
+                .style("opacity", .9);
+            //selects the vertical dashed line in the group
+			      d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+            })	
+				
+      .on("mouseout", function(d) {		
+            div.transition()		
+               .duration(500)		
+               .style("opacity", 0);
+
+			      d3.select(this.nextElementSibling).transition()		
+                .duration(500)		
+                .style("opacity", 0);
+
+			      d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
+
+svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+	    .selectAll(".tick text")
+      .call(wrap, 35);
+
+
+
+
+
+
+
+
+
+
+
+
+//http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html
+svg.append("text")      // text label for the x-axis
+        .attr("x", 15 - margin.left )
+        .attr("y",  height+27)
+        .style("text-anchor", "middle")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat")
+        .text("Leto");
+
+svg.append("text")      // text label for the y-axis
+        .attr("y",15 - margin.left)
+        .attr("x",50 - (height / 2))
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "end")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat") 
+        .style("font-size", "16px")
+        .text("Plača (€)");
+
+//http://www.d3noob.org/2013/01/adding-title-to-your-d3js-graph.html
+svg.append("text")      // text label for chart Title
+        .attr("x", width / 2 )
+        .attr("y", 0 - (margin.top/2))
+        .style("text-anchor", "middle")
+		.style("font-size", "16px") 
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat")  
+        .text("Povprecna mesecna neto placa v občini "+ mesto);
+
+
+svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    //text label for the y-axis inside chart
+    /*
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style("font-size", "16px") 
+      .style("background-color","red")
+      .text("road length (km)");
+    */
+
+//http://bl.ocks.org/mbostock/7555321
+//This code wraps label text if it has too much text
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
+}
+
+});
+
+
+
+///////////////////////
+// Parse the Data
+d3.csv("sola2.csv", function(data) {
+	data.forEach(function(d) {
+    d[mesto.toUpperCase()] = parseInt(d[mesto.toUpperCase()]);
+});
+
+  ///////////////////////
+  // Chart Size Setup
+  var width = document.getElementById("c2").clientWidth;
+  var height = document.getElementById("c2").clientHeight;
+  var margin = { top: 35, right: 20, bottom: 70, left: 70 };
+
+  width = width - margin.left - margin.right,
+  height = height - margin.top - margin.bottom;
+
+  var chart = d3.select(".chart2")
+      .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  ///////////////////////
+  // Scales
+  var x = d3.scale.ordinal()
+      .domain(data.map(function(d) { return d['OBCINA']; }))
+      .rangeRoundBands([0, width], .1);
+console.log(mesto.toUpperCase());
+console.log(d3.max(data, function(d) { return d[mesto.toUpperCase()]; }));
+  var y = d3.scale.linear()
+      .domain([0, d3.max(data, function(d) { return d[mesto.toUpperCase()]; })])
+      .range([height, 0]);
+
+  ///////////////////////
+  // Axis
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  chart.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  chart.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+  ///////////////////////
+  // Title
+  chart.append("text")
+    .text('Brezposelnost po izobrazbi v občini '+ mesto)
+    .attr("text-anchor", "middle")
+    .attr("class", "graph-title")
+    .attr("y", -10)
+    .attr("x", width / 2.0);
+
+  chart.append("text")      // text label for the x-axis
+        .attr("x", 40 - margin.left )
+        .attr("y",  height+27)
+        .style("text-anchor", "middle")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat")
+        .text("Izobrazba");
+
+  chart.append("text")      // text label for the y-axis
+        .attr("y",15 - margin.left)
+        .attr("x",50 - (height / 2))
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "end")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat") 
+        .style("font-size", "16px")
+        .text("Št. Oseb");
+
+  ///////////////////////
+  // Bars
+  var bar = chart.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d['OBCINA']); })
+      .attr("y", height)
+      .attr("width", x.rangeBand())
+      .attr("height", 0);
+
+  bar.transition()
+      .duration(1500)
+      .ease("elastic")
+      .attr("y", function(d) { return y(d[mesto.toUpperCase()]); })
+      .attr("height", function(d) { return height - y(d[mesto.toUpperCase()]); })
+
+  ///////////////////////
+  // Tooltips
+  var tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip");
+
+  bar.on("mouseover", function(d) {
+        tooltip.html(d['value'])
+            .style("visibility", "visible");
+      })
+      .on("mousemove", function(d) {
+        tooltip.style("top", event.pageY - (tooltip[0][0].clientHeight + 5) + "px")
+            .style("left", event.pageX - (tooltip[0][0].clientWidth / 2.0) + "px");
+      })
+      .on("mouseout", function(d) {
+        tooltip.style("visibility", "hidden");
+      });
+});
+
+
+		
+		
+		
+		
+      }
+      $('#slovenia-map-select').val(data1.name);
+    }
+  });
+
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+window.addEventListener('resize', function(event){
+  d3.selectAll("g").remove();
+  d3.selectAll("text").remove();
+
+///////////////////////
+// Parse the Data
+d3.csv("sola.csv", function(data) {
+  data.forEach(function(d) {
+    d[mesto.toUpperCase()] = parseInt(d[mesto.toUpperCase()]);
+});
+
+  ///////////////////////
+  // Chart Size Setup
+  var width = document.getElementById("c2").clientWidth;
+  var height = document.getElementById("c2").clientHeight;
+  var margin = { top: 35, right: 20, bottom: 70, left: 70 };
+
+  width = width - margin.left - margin.right,
+  height = height - margin.top - margin.bottom;
+
+  var chart = d3.select(".chart2")
+      .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  ///////////////////////
+  // Scales
+  var x = d3.scale.ordinal()
+      .domain(data.map(function(d) { return d['OBCINA']; }))
+      .rangeRoundBands([0, width], .1);
+//console.log(mesto.toUpperCase());
+console.log(d3.max(data, function(d) { return d[mesto.toUpperCase()]; }));
+  var y = d3.scale.linear()
+      .domain([0, d3.max(data, function(d) { return d[mesto.toUpperCase()]; })])
+      .range([height, 0]);
+
+  ///////////////////////
+  // Axis
+  var xAxis = d3.svg.axis()
+      .scale(x)
+      .orient("bottom");
+
+  var yAxis = d3.svg.axis()
+      .scale(y)
+      .orient("left");
+
+  chart.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis);
+
+  chart.append("g")
+      .attr("class", "y axis")
+      .call(yAxis);
+
+  ///////////////////////
+  // Title
+  chart.append("text")
+    .text('Brezposelnost po izobrazbi v občini '+ mesto)
+    .attr("text-anchor", "middle")
+    .attr("class", "graph-title")
+    .attr("y", -10)
+    .attr("x", width / 2.0);
+
+   chart.append("text")      // text label for the x-axis
+        .attr("x", 40 - margin.left )
+        .attr("y",  height+27)
+        .style("text-anchor", "middle")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat")
+        .text("Izobrazba");
+
+  chart.append("text")      // text label for the y-axis
+        .attr("y",15 - margin.left)
+        .attr("x",50 - (height / 2))
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "end")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat") 
+        .style("font-size", "16px")
+        .text("Št. Oseb");
+
+  ///////////////////////
+  // Bars
+  var bar = chart.selectAll(".bar")
+      .data(data)
+    .enter().append("rect")
+      .attr("class", "bar")
+      .attr("x", function(d) { return x(d['OBCINA']); })
+      .attr("y", height)
+      .attr("width", x.rangeBand())
+      .attr("height", 0);
+
+  bar.transition()
+      .duration(1500)
+      .ease("elastic")
+      .attr("y", function(d) { return y(d[mesto.toUpperCase()]); })
+      .attr("height", function(d) { return height - y(d[mesto.toUpperCase()]); })
+
+  ///////////////////////
+  // Tooltips
+  var tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip");
+
+  bar.on("mouseover", function(d) {
+        tooltip.html(d['value'])
+            .style("visibility", "visible");
+      })
+      .on("mousemove", function(d) {
+        tooltip.style("top", event.pageY - (tooltip[0][0].clientHeight + 5) + "px")
+            .style("left", event.pageX - (tooltip[0][0].clientWidth / 2.0) + "px");
+      })
+      .on("mouseout", function(d) {
+        tooltip.style("visibility", "hidden");
+      });
+
+  var width = document.getElementById("c").clientWidth;
+var height = document.getElementById("c").clientHeight;
+
+var margin = {top: 50, right: 70, bottom: 100, left: 70},
+    width = width - margin.left - margin.right,
+    height = height - margin.top - margin.bottom;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+  .ticks(d3.date)
+  //makes the xAxis ticks a little longer than the xMinorAxis ticks
+    .tickSize(15)
+    .orient("bottom");
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d[mesto]); });
+var linee = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d[mestoo]); });
+
+var div = d3.select("body").append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
+
+var svg = d3.select("#chart").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//The format in the CSV, which d3 will read
+var parseDate = d3.time.format("%Y");
+
+//format for tooltip
+//https://github.com/mbostock/d3/wiki/Time-Formatting
+//var formatTime = d3.time.format("%e %b");
+var formatTime = d3.time.format("%e %b %-I:%M %p");
+var formatCount = d3.format(",");
+
+// function for the y grid lines
+function make_y_axis() {
+  return d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(5)
+}
+
+svg.append("circle").attr("cx",20).attr("cy",40).attr("r", 6).style("fill", "orange")
+svg.append("text").attr("x", 40).attr("y", 40).text(mesto).style("font-size", "15px").attr("alignment-baseline","middle")
+
+
+//reading in CSV which contains data
+d3.csv("cas.csv", function(error, data) {
+  data.forEach(function(d) {
+    console.log(d.time)
+    d.date = parseDate.parse(d.time);
+  console.log(d.date);
+    d[mesto] = +d[mesto];
+    console.log(d[mesto]);
+  });
+
+  //using imported data to define extent of x and y domains
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  y.domain(d3.extent(
+        [].concat(data.map(function(d) { 
+            return d[mesto]; 
+        }), data.map(function(d) { 
+            return d[mestoo]; 
+        }))));
+
+// Draw the y Grid lines
+  svg.append("g")            
+    .attr("class", "grid")
+    .call(make_y_axis()
+      .tickSize(-width, 0, 0)
+      .tickFormat("")
+    )
+  
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line)
+	  .style("stroke", "orange");
+
+//taken from http://bl.ocks.org/mbostock/3887118
+//and http://www.d3noob.org/2013/01/change-line-chart-into-scatter-plot.html
+//creating a group(g) and will append a circle and 2 lines inside each group
+var g = svg.selectAll()
+        .data(data).enter().append("g");
+
+   //The markers on the line
+   g.append("circle")
+         //circle radius is increased
+        .attr("r", 4.5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d[mesto]); });
+   
+   //The horizontal dashed line that appears when a circle marker is moused over
+   g.append("line")
+        .attr("class", "x")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mesto]); })
+        //d3.min gets the min date from the date x-axis scale
+        .attr("x2", function(d) { return x(d3.min(x)); })
+        .attr("y2", function(d) { return y(d[mesto]); });
+
+  //The vertical dashed line that appears when a circle marker is moused over
+  g.append("line")
+        .attr("class", "y")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mesto]); })
+        .attr("x2", function(d) { return x(d.date); })
+        .attr("y2", height);
+    
+   //circles are selected again to add the mouseover functions
+   g.selectAll("circle")
+      .on("mouseover", function(d) {    
+            div.transition()    
+               .duration(200)   
+               .style("opacity", .9); 
+            div.html(formatCount(d[mesto]) + " € " + "Leto: " +d.time)  
+               .style("left", (d3.event.pageX - 20) + "px")
+               .style("top", (d3.event.pageY + 6) + "px");
+            //selects the horizontal dashed line in the group
+            d3.select(this.nextElementSibling).transition()   
+                .duration(200)    
+                .style("opacity", .9);
+            //selects the vertical dashed line in the group
+            d3.select(this.nextElementSibling.nextElementSibling).transition()    
+                .duration(200)    
+                .style("opacity", .9);  
+            })  
+        
+      .on("mouseout", function(d) {   
+            div.transition()    
+               .duration(500)   
+               .style("opacity", 0);
+
+            d3.select(this.nextElementSibling).transition()   
+                .duration(500)    
+                .style("opacity", 0);
+
+            d3.select(this.nextElementSibling.nextElementSibling).transition()    
+                .duration(500)    
+                .style("opacity", 0); 
+        });
+
+svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+      .selectAll(".tick text")
+      .call(wrap, 35);
+
+
+
+
+
+
+
+//http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html
+svg.append("text")      // text label for the x-axis
+        .attr("x", 15 - margin.left )
+        .attr("y",  height+27)
+        .style("text-anchor", "middle")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat")
+        .text("Leto");
+
+svg.append("text")      // text label for the y-axis
+        .attr("y",15 - margin.left)
+        .attr("x",50 - (height / 2))
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "end")
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat") 
+        .style("font-size", "16px")
+        .text("Plača (€)");
+
+//http://www.d3noob.org/2013/01/adding-title-to-your-d3js-graph.html
+svg.append("text")      // text label for chart Title
+        .attr("x", width / 2 )
+        .attr("y", 0 - (margin.top/2))
+        .style("text-anchor", "middle")
+    .style("font-size", "16px") 
+        .style("text-decoration", "bold")
+        .style("font-family", "Montserrat")  
+        .text("Povprecna mesecna neto placa v občini "+ mesto);
+
+
+svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    //text label for the y-axis inside chart
+    /*
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style("font-size", "16px") 
+      .style("background-color","red")
+      .text("road length (km)");
+    */
+
+//http://bl.ocks.org/mbostock/7555321
+//This code wraps label text if it has too much text
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
+}
+});
+});
+});
+
+  </script>
+	   
+</body>
+</html>

@@ -1,0 +1,722 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<title>Povprečna Plača</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="keywords" content="">
+    <meta name="description" content="Spletna stran Rokodelstva Baša">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="icon" href="Images/Icon2.jpg">
+    <script src="scripts/d3.js"></script>
+    <script src="index.js"></script>
+	<link rel="stylesheet" href="index.css">
+	<link href='https://fonts.googleapis.com/css?family=Montserrat' rel='stylesheet'>
+	<style>
+body {
+  font: 14px sans-serif;
+  align:center;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  stroke-width: 1.5px;
+  shape-rendering: crispEdges;
+}
+
+.line {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3.5px;
+}
+.linee {
+  fill: none;
+  stroke: steelblue;
+  stroke-width: 3.5px;
+}
+
+.dot {
+  stroke: #000;
+}
+
+div.tooltip {   
+  position: absolute;           
+  text-align: center;           
+  width: 80px;                  
+  height: 55px;                 
+  padding: 4px;             
+  font: 16px sans-serif;  
+  color: white;   
+  font-weight: 500;   
+  background: black;   
+  border: 0px;      
+  border-radius: 4px;           
+  pointer-events: none;         
+}
+
+/* http://www.d3noob.org/2013/01/adding-grid-lines-to-d3js-graph.html */
+.grid .tick {
+    stroke: lightgrey;
+    opacity: 0.7;
+}
+
+
+	
+	
+	
+	
+* {
+  box-sizing: border-box;
+}
+
+/*the container must be positioned relative:*/
+.autocomplete {
+  position: relative;
+  display: inline-block;
+}
+
+input {
+  border: 1px solid transparent;
+  background-color: #f1f1f1;
+  padding: 10px;
+  font-size: 16px;
+}
+
+input[type=text] {
+  background-color: #f1f1f1;
+  width: 100%;
+}
+
+input[type=submit] {
+  background-color: DodgerBlue;
+  color: #fff;
+  cursor: pointer;
+}
+
+.autocomplete-items {
+  position: absolute;
+  border: 1px solid #d4d4d4;
+  border-bottom: none;
+  border-top: none;
+  z-index: 99;
+  /*position the autocomplete items to be the same width as the container:*/
+  top: 100%;
+  left: 0;
+  right: 0;
+}
+
+.autocomplete-items div {
+  padding: 10px;
+  cursor: pointer;
+  background-color: #fff; 
+  border-bottom: 1px solid #d4d4d4; 
+}
+
+/*when hovering an item:*/
+.autocomplete-items div:hover {
+  background-color: #e9e9e9; 
+}
+
+/*when navigating through the items using the arrow keys:*/
+.autocomplete-active {
+  background-color: DodgerBlue !important; 
+  color: #ffffff; 
+}
+</style>
+</head>
+<body>  
+  <nav class="navbar fixed-top navbar-expand-lg navbar-light bg-primary">
+    <div class="container-fluid">
+            <div class="navbar-header align-middle">
+                <button class="collapsed navbar-toggler align-middle" type="button" data-toggle="collapse" data-target="#navbarMenu" onclick="resize_body_padding();">
+                    <span> </span>
+            <span> </span>
+            <span> </span>    
+                </button>
+                <a href="#" class="navbar-brand align-middle">
+                    <h3>Povprečna plača</h3>
+                </a>
+                <div class="logo align-middle">
+                        <img src="Images/Icon2.jpg" height="40" alt="EURO" class="logo"/>
+                </div>
+              </div>
+                <div class="collapse navbar-collapse" id="navbarMenu">
+            <ul class = "nav navbar-nav">
+                <li><a class="nav-link" href="index.html"><button id="domov" class="btn btn-info">DOMOV</button></a></li>
+                <li><a class="nav-link" href="obcine.html"><button id="regije" class="btn btn-info">REGIJE</button></a></li>
+                <li><a class="nav-link" href="primerjava.html"><button id="dejavnosti" class="btn btn-info">PRIMERJAJ</button></a></li>
+                <li><a class="nav-link" href="casovnica.html"><button id="casovnica" class="btn btn-info">ČASOVNICA</button></a></li>
+				<li><a class="nav-link" href="slo.html"><button id="slo" class="btn btn-info">slo</button></a></li>
+            </ul>
+        </div>
+      </div>
+    </nav>
+    
+        <div class="container-fluid" style="margin-bottom: 20px; margin-top: 20px;">
+          <div class="autocomplete row w-100">
+        <form class="col-xs-12 col-sm-12 col-md-12 col-lg-12 col-xl-12">
+          <div class="input-group">
+            <input id="ena" type="text" class="form-control" placeholder="Ljubljana" name="myCountry">
+			<input id="dva" type="text" class="form-control" placeholder="Trebnje" name="myCountry">
+  <div class="input-group-append">
+    <button class="btn btn-link btn-outline-primary" type="button" onclick="potegni()" id="iscem">IŠČI</button>
+  </div>
+</div>
+          </form>
+    </div>
+            </div>
+  
+
+	<!-- Load d3.js -->
+<div id="svg" style="text-align:center">
+<script src="https://d3js.org/d3.v3.js"></script>
+
+<!-- Create a div where the graph will take place -->
+
+
+
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+</body>
+</html>
+<script>
+function potegni(){
+var mesto = document.getElementById("ena").value;
+var mestoo = document.getElementById("dva").value;
+
+
+
+var a = []	;
+var skup = 0;
+
+
+
+
+
+
+
+//I increased the bottom margin a little bit because the x label is tied to it; so I could lower the x label a little bit
+var margin = {top: 50, right: 20, bottom: 240, left: 90},
+    width = 900 - margin.left - margin.right,
+    height = 600 - margin.top - margin.bottom;
+
+var x = d3.time.scale()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+	.ticks(d3.date)
+	//makes the xAxis ticks a little longer than the xMinorAxis ticks
+    .tickSize(15)
+    .orient("bottom");
+
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d[mesto]); });
+var linee = d3.svg.line()
+    .x(function(d) { return x(d.date); })
+    .y(function(d) { return y(d[mestoo]); });
+
+var div = d3.select("body").append("div")   
+    .attr("class", "tooltip")               
+    .style("opacity", 0);
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+//The format in the CSV, which d3 will read
+var parseDate = d3.time.format("%Y");
+
+//format for tooltip
+//https://github.com/mbostock/d3/wiki/Time-Formatting
+//var formatTime = d3.time.format("%e %b");
+var formatTime = d3.time.format("%e %b %-I:%M %p");
+var formatCount = d3.format(",");
+
+// function for the y grid lines
+function make_y_axis() {
+  return d3.svg.axis()
+      .scale(y)
+      .orient("left")
+      .ticks(5)
+}
+
+//reading in CSV which contains data
+d3.csv("cas.csv", function(error, data) {
+  data.forEach(function(d) {
+    console.log(d.time)
+    d.date = parseDate.parse(d.time);
+	console.log(d.date);
+    d[mesto] = +d[mesto];
+    console.log(d[mesto]);
+	a.push(d[mesto]);
+	console.log(a);
+  });
+  
+  console.log(a);
+  //using imported data to define extent of x and y domains
+  x.domain(d3.extent(data, function(d) { return d.date; }));
+  y.domain(d3.extent(
+		[].concat(data.map(function(d) { 
+			return d[mesto]; 
+		}), data.map(function(d) { 
+			return d[mestoo]; 
+		}))));
+	
+	
+  
+  //y.domain(d3.extent(data, function(d) { return d[mestoo]; }));
+
+// Draw the y Grid lines
+	svg.append("g")            
+		.attr("class", "grid")
+		.call(make_y_axis()
+			.tickSize(-width, 0, 0)
+			.tickFormat("")
+		)
+  
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", line);
+
+//taken from http://bl.ocks.org/mbostock/3887118
+//and http://www.d3noob.org/2013/01/change-line-chart-into-scatter-plot.html
+//creating a group(g) and will append a circle and 2 lines inside each group
+var g = svg.selectAll()
+        .data(data).enter().append("g");
+
+   //The markers on the line
+	 g.append("circle")
+         //circle radius is increased
+        .attr("r", 4.5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d[mesto]); });
+   
+   //The horizontal dashed line that appears when a circle marker is moused over
+	 g.append("line")
+        .attr("class", "x")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mesto]); })
+		    //d3.min gets the min date from the date x-axis scale
+		    .attr("x2", function(d) { return x(d3.min(x)); })
+        .attr("y2", function(d) { return y(d[mesto]); });
+
+  //The vertical dashed line that appears when a circle marker is moused over
+	g.append("line")
+        .attr("class", "y")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mesto]); })
+		    .attr("x2", function(d) { return x(d.date); })
+        .attr("y2", height);
+    
+   //circles are selected again to add the mouseover functions
+ 	 g.selectAll("circle")
+			.on("mouseover", function(d) {		
+            div.transition()		
+               .duration(200)		
+               .style("opacity", .9);	
+            div.html(formatCount(d[mesto]) + " €" + "<br/>" + "Leto:" + "<br/>"+d.time)	
+               .style("left", (d3.event.pageX - 20) + "px")
+      		     .style("top", (d3.event.pageY + 6) + "px");
+	          //selects the horizontal dashed line in the group
+			      d3.select(this.nextElementSibling).transition()		
+                .duration(200)		
+                .style("opacity", .9);
+            //selects the vertical dashed line in the group
+			      d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+            })	
+				
+      .on("mouseout", function(d) {		
+            div.transition()		
+               .duration(500)		
+               .style("opacity", 0);
+
+			      d3.select(this.nextElementSibling).transition()		
+                .duration(500)		
+                .style("opacity", 0);
+
+			      d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
+
+svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+	    .selectAll(".tick text")
+      .call(wrap, 35);
+
+
+
+
+
+
+
+
+
+d3.csv("cas.csv", function(error, data) {
+  data.forEach(function(d) {
+    console.log(d.time)
+    d.date = parseDate.parse(d.time);
+	console.log(d.date);
+    //d[mestoo] = +d[mestoo];
+    console.log(d[mestoo]);
+  });
+
+  
+
+// Draw the y Grid lines
+	svg.append("g")            
+		.attr("class", "grid")
+		.call(make_y_axis()
+			.tickSize(-width, 0, 0)
+			.tickFormat("")
+		)
+  
+  svg.append("path")
+      .datum(data)
+      .attr("class", "line")
+      .attr("d", linee);
+
+//taken from http://bl.ocks.org/mbostock/3887118
+//and http://www.d3noob.org/2013/01/change-line-chart-into-scatter-plot.html
+//creating a group(g) and will append a circle and 2 lines inside each group
+var g = svg.selectAll()
+        .data(data).enter().append("g");
+
+   //The markers on the line
+	 g.append("circle")
+         //circle radius is increased
+        .attr("r", 4.5)
+        .attr("cx", function(d) { return x(d.date); })
+        .attr("cy", function(d) { return y(d[mestoo]); });
+   
+   //The horizontal dashed line that appears when a circle marker is moused over
+	 g.append("line")
+        .attr("class", "x")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mestoo]); })
+		    //d3.min gets the min date from the date x-axis scale
+		    .attr("x2", function(d) { return x(d3.min(x)); })
+        .attr("y2", function(d) { return y(d[mestoo]); });
+
+  //The vertical dashed line that appears when a circle marker is moused over
+	g.append("line")
+        .attr("class", "y")
+        .attr("id", "dashedLine")
+        .style("stroke", "steelblue")
+        .style("stroke-dasharray", "3,3")
+        .style("opacity", 0)
+        .attr("x1", function(d) { return x(d.date); })
+        .attr("y1", function(d) { return y(d[mestoo]); })
+		    .attr("x2", function(d) { return x(d.date); })
+        .attr("y2", height);
+    
+   //circles are selected again to add the mouseover functions
+ 	 g.selectAll("circle")
+			.on("mouseover", function(d) {		
+            div.transition()		
+               .duration(200)		
+               .style("opacity", .9);	
+            div.html(formatCount(d[mestoo]) + " €" + "<br/>" + "Leto:" + "<br/>"+d.time)	
+               .style("left", (d3.event.pageX - 20) + "px")
+      		     .style("top", (d3.event.pageY + 6) + "px");
+	          //selects the horizontal dashed line in the group
+			      d3.select(this.nextElementSibling).transition()		
+                .duration(200)		
+                .style("opacity", .9);
+            //selects the vertical dashed line in the group
+			      d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                .duration(200)		
+                .style("opacity", .9);	
+            })	
+				
+      .on("mouseout", function(d) {		
+            div.transition()		
+               .duration(500)		
+               .style("opacity", 0);
+
+			      d3.select(this.nextElementSibling).transition()		
+                .duration(500)		
+                .style("opacity", 0);
+
+			      d3.select(this.nextElementSibling.nextElementSibling).transition()		
+                .duration(500)		
+                .style("opacity", 0);	
+        });
+
+svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+	    .selectAll(".tick text")
+      .call(wrap, 35);
+//http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html
+svg.append("text")      // text label for the x-axis
+        .attr("x", width / 2 )
+        .attr("y",  height + margin.bottom)
+        .style("text-anchor", "middle")
+        .text("Leto");
+
+svg.append("text")      // text label for the y-axis
+        .attr("y",30 - margin.left)
+        .attr("x",50 - (height / 2))
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "end")
+        .style("font-size", "16px")
+        .text("Povprecna mesecna neto placa (eur)");
+
+//http://www.d3noob.org/2013/01/adding-title-to-your-d3js-graph.html
+svg.append("text")      // text label for chart Title
+        .attr("x", width / 2 )
+        .attr("y", 0 - (margin.top/2))
+        .style("text-anchor", "middle")
+		.style("font-size", "16px") 
+        .style("text-decoration", "underline") 
+        .text("Povprecna mesecna neto placa v Sloveniji");
+
+
+svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    //text label for the y-axis inside chart
+    /*
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style("font-size", "16px") 
+      .style("background-color","red")
+      .text("road length (km)");
+    */
+});
+
+
+
+
+
+//http://www.d3noob.org/2012/12/adding-axis-labels-to-d3js-graph.html
+svg.append("text")      // text label for the x-axis
+        .attr("x", width / 2 )
+        .attr("y",  height + margin.bottom)
+        .style("text-anchor", "middle")
+        .text("Leto");
+
+svg.append("text")      // text label for the y-axis
+        .attr("y",30 - margin.left)
+        .attr("x",50 - (height / 2))
+        .attr("transform", "rotate(-90)")
+        .style("text-anchor", "end")
+        .style("font-size", "16px")
+        .text("Povprecna mesecna neto placa (eur)");
+
+//http://www.d3noob.org/2013/01/adding-title-to-your-d3js-graph.html
+svg.append("text")      // text label for chart Title
+        .attr("x", width / 2 )
+        .attr("y", 0 - (margin.top/2))
+        .style("text-anchor", "middle")
+		.style("font-size", "16px") 
+        .style("text-decoration", "underline") 
+        .text("Povprecna mesecna neto placa v Sloveniji");
+
+
+svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    //text label for the y-axis inside chart
+    /*
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .style("font-size", "16px") 
+      .style("background-color","red")
+      .text("road length (km)");
+    */
+
+//http://bl.ocks.org/mbostock/7555321
+//This code wraps label text if it has too much text
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).append("tspan").attr("x", 0).attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").attr("x", 0).attr("y", y).attr("dy", ++lineNumber * lineHeight + dy + "em").text(word);
+      }
+    }
+  });
+}
+
+});
+
+
+
+
+
+
+
+
+
+
+
+
+}
+</script>
+<script>
+function autocomplete(inp, arr) {
+  /*the autocomplete function takes two arguments,
+  the text field element and an array of possible autocompleted values:*/
+  var currentFocus;
+  /*execute a function when someone writes in the text field:*/
+  inp.addEventListener("input", function(e) {
+      var a, b, i, val = this.value;
+      /*close any already open lists of autocompleted values*/
+      closeAllLists();
+      if (!val) { return false;}
+      currentFocus = -1;
+      /*create a DIV element that will contain the items (values):*/
+      a = document.createElement("DIV");
+      a.setAttribute("id", this.id + "autocomplete-list");
+      a.setAttribute("class", "autocomplete-items");
+      /*append the DIV element as a child of the autocomplete container:*/
+      this.parentNode.appendChild(a);
+      /*for each item in the array...*/
+      for (i = 0; i < arr.length; i++) {
+        /*check if the item starts with the same letters as the text field value:*/
+        if (arr[i].substr(0, val.length).toUpperCase() == val.toUpperCase()) {
+          /*create a DIV element for each matching element:*/
+          b = document.createElement("DIV");
+          /*make the matching letters bold:*/
+          b.innerHTML = "<strong>" + arr[i].substr(0, val.length) + "</strong>";
+          b.innerHTML += arr[i].substr(val.length);
+          /*insert a input field that will hold the current array item's value:*/
+          b.innerHTML += "<input type='hidden' value='" + arr[i] + "'>";
+          /*execute a function when someone clicks on the item value (DIV element):*/
+          b.addEventListener("click", function(e) {
+              /*insert the value for the autocomplete text field:*/
+              inp.value = this.getElementsByTagName("input")[0].value;
+              /*close the list of autocompleted values,
+              (or any other open lists of autocompleted values:*/
+              closeAllLists();
+          });
+          a.appendChild(b);
+        }
+      }
+  });
+  /*execute a function presses a key on the keyboard:*/
+  inp.addEventListener("keydown", function(e) {
+      var x = document.getElementById(this.id + "autocomplete-list");
+      if (x) x = x.getElementsByTagName("div");
+      if (e.keyCode == 40) {
+        /*If the arrow DOWN key is pressed,
+        increase the currentFocus variable:*/
+        currentFocus++;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 38) { //up
+        /*If the arrow UP key is pressed,
+        decrease the currentFocus variable:*/
+        currentFocus--;
+        /*and and make the current item more visible:*/
+        addActive(x);
+      } else if (e.keyCode == 13) {
+        /*If the ENTER key is pressed, prevent the form from being submitted,*/
+        e.preventDefault();
+        if (currentFocus > -1) {
+          /*and simulate a click on the "active" item:*/
+          if (x) x[currentFocus].click();
+        }
+      }
+  });
+  function addActive(x) {
+    /*a function to classify an item as "active":*/
+    if (!x) return false;
+    /*start by removing the "active" class on all items:*/
+    removeActive(x);
+    if (currentFocus >= x.length) currentFocus = 0;
+    if (currentFocus < 0) currentFocus = (x.length - 1);
+    /*add class "autocomplete-active":*/
+    x[currentFocus].classList.add("autocomplete-active");
+  }
+  function removeActive(x) {
+    /*a function to remove the "active" class from all autocomplete items:*/
+    for (var i = 0; i < x.length; i++) {
+      x[i].classList.remove("autocomplete-active");
+    }
+  }
+  function closeAllLists(elmnt) {
+    /*close all autocomplete lists in the document,
+    except the one passed as an argument:*/
+    var x = document.getElementsByClassName("autocomplete-items");
+    for (var i = 0; i < x.length; i++) {
+      if (elmnt != x[i] && elmnt != inp) {
+        x[i].parentNode.removeChild(x[i]);
+      }
+    }
+  }
+  /*execute a function when someone clicks in the document:*/
+  document.addEventListener("click", function (e) {
+      closeAllLists(e.target);
+  });
+}
+
+/*An array containing all the country names in the world:*/
+//var countries = ["Afghanistan","Albania","Algeria","Andorra","Angola","Anguilla","Antigua & Barbuda","Argentina","Armenia","Aruba","Australia","Austria","Azerbaijan","Bahamas","Bahrain","Bangladesh","Barbados","Belarus","Belgium","Belize","Benin","Bermuda","Bhutan","Bolivia","Bosnia & Herzegovina","Botswana","Brazil","British Virgin Islands","Brunei","Bulgaria","Burkina Faso","Burundi","Cambodia","Cameroon","Canada","Cape Verde","Cayman Islands","Central Arfrican Republic","Chad","Chile","China","Colombia","Congo","Cook Islands","Costa Rica","Cote D Ivoire","Croatia","Cuba","Curacao","Cyprus","Czech Republic","Denmark","Djibouti","Dominica","Dominican Republic","Ecuador","Egypt","El Salvador","Equatorial Guinea","Eritrea","Estonia","Ethiopia","Falkland Islands","Faroe Islands","Fiji","Finland","France","French Polynesia","French West Indies","Gabon","Gambia","Georgia","Germany","Ghana","Gibraltar","Greece","Greenland","Grenada","Guam","Guatemala","Guernsey","Guinea","Guinea Bissau","Guyana","Haiti","Honduras","Hong Kong","Hungary","Iceland","India","Indonesia","Iran","Iraq","Ireland","Isle of Man","Israel","Italy","Jamaica","Japan","Jersey","Jordan","Kazakhstan","Kenya","Kiribati","Kosovo","Kuwait","Kyrgyzstan","Laos","Latvia","Lebanon","Lesotho","Liberia","Libya","Liechtenstein","Lithuania","Luxembourg","Macau","Macedonia","Madagascar","Malawi","Malaysia","Maldives","Mali","Malta","Marshall Islands","Mauritania","Mauritius","Mexico","Micronesia","Moldova","Monaco","Mongolia","Montenegro","Montserrat","Morocco","Mozambique","Myanmar","Namibia","Nauro","Nepal","Netherlands","Netherlands Antilles","New Caledonia","New Zealand","Nicaragua","Niger","Nigeria","North Korea","Norway","Oman","Pakistan","Palau","Palestine","Panama","Papua New Guinea","Paraguay","Peru","Philippines","Poland","Portugal","Puerto Rico","Qatar","Reunion","Romania","Russia","Rwanda","Saint Pierre & Miquelon","Samoa","San Marino","Sao Tome and Principe","Saudi Arabia","Senegal","Serbia","Seychelles","Sierra Leone","Singapore","Slovakia","Slovenia","Solomon Islands","Somalia","South Africa","South Korea","South Sudan","Spain","Sri Lanka","St Kitts & Nevis","St Lucia","St Vincent","Sudan","Suriname","Swaziland","Sweden","Switzerland","Syria","Taiwan","Tajikistan","Tanzania","Thailand","Timor L'Este","Togo","Tonga","Trinidad & Tobago","Tunisia","Turkey","Turkmenistan","Turks & Caicos","Tuvalu","Uganda","Ukraine","United Arab Emirates","United Kingdom","United States of America","Uruguay","Uzbekistan","Vanuatu","Vatican City","Venezuela","Vietnam","Virgin Islands (US)","Yemen","Zambia","Zimbabwe"];
+//var countries = ["KMETIJSTVO IN LOV, GOZDARSTVO, RIBIŠTVO" ,"Kmetijska proizvodnja in lov ter z njima povezane storitve ","Pridelovanje netrajnih rastlin ","Pridelovanje žit [razen riža], stroènic in oljnic" ,"Pridelovanje žit [razen riža], stroènic in oljnic" ,"Pridelovanje riža ","Pridelovanje riža ","Pridelovanje zelenjadnic in melon, korenovk in gomoljnic" ,"Pridelovanje zelenjadnic in melon, korenovk in gomoljnic" ,"Pridelovanje sladkornega trsa ","Pridelovanje sladkornega trsa ","Pridelovanje tobaka ","Pridelovanje tobaka ","Pridelovanje rastlin za vlakna ","Pridelovanje rastlin za vlakna ","Pridelovanje cvetja in drugih enoletnih rastlin ","Pridelovanje cvetja in drugih enoletnih rastlin ","Gojenje trajnih nasadov ","Vinogradništvo ","Vinogradništvo ","Gojenje tropskega in subtropskega sadja ","Gojenje tropskega in subtropskega sadja ","Gojenje citrusov ","Gojenje citrusov ","Gojenje peèkatega in košèièastega sadja ","Gojenje peèkatega in košèièastega sadja ","Gojenje drugih sadnih dreves in grmovnic ","Gojenje drugih sadnih dreves in grmovnic ","Pridelovanje oljnih sadežev ","Pridelovanje oljnih sadežev ","Gojenje rastlin za izdelavo napitkov ","Gojenje rastlin za izdelavo napitkov ","Gojenje zaèimbnih, aromatskih in zdravilnih rastlin" ,"Gojenje zaèimbnih, aromatskih in zdravilnih rastlin" ,"Gojenje drugih trajnih nasadov ","Gojenje drugih trajnih nasadov ","Razmnoževanje rastlin ","Razmnoževanje rastlin ","Razmnoževanje rastlin ","Živinoreja ","Prireja mleka ","Prireja mleka ","Druga govedoreja ","Druga govedoreja ","Konjereja ","Konjereja ","Reja kamel ","Reja kamel ","Reja drobnice ","Reja drobnice ","Prašièereja ","Prašièereja ","Reja perutnine ","Reja perutnine ","Reja drugih živali ","Reja drugih živali ","Mešano kmetijstvo ","Mešano kmetijstvo ","Mešano kmetijstvo ","Storitve za kmetijsko proizvodnjo, priprava pridelkov" ,"Storitve za rastlinsko pridelavo ","Storitve za rastlinsko pridelavo ","Storitve za živinorejo, razen veterinarskih" ,"Storitve za živinorejo, razen veterinarskih" ,"Priprava pridelkov ","Priprava pridelkov ","Obdelava semen ","Obdelava semen ","Lovstvo ","Lovstvo ","Lovstvo ","Gozdarstvo ","Gojenje gozdov in druge gozdarske dejavnosti ","Gojenje gozdov in druge gozdarske dejavnosti ","Gojenje gozdov in druge gozdarske dejavnosti ","Seènja ","Seènja ","Seènja ","Nabiranje gozdnih dobrin, razen lesa" ,"Nabiranje gozdnih dobrin, razen lesa" ,"Nabiranje gozdnih dobrin, razen lesa" ,"Storitve za gozdarstvo ","Storitve za gozdarstvo ","Storitve za gozdarstvo ","Ribištvo in gojenje vodnih organizmov ","Ribištvo ","Morsko ribištvo ","Morsko ribištvo ","Sladkovodno ribištvo ","Sladkovodno ribištvo ","Gojenje vodnih organizmov ","Gojenje morskih organizmov ","Gojenje morskih organizmov ","Gojenje sladkovodnih organizmov ","Gojenje sladkovodnih organizmov ","RUDARSTVO ","Pridobivanje premoga ","Pridobivanje èrnega premoga ","Pridobivanje èrnega premoga ","Pridobivanje èrnega premoga ","Pridobivanje rjavega premoga in lignita ","Pridobivanje rjavega premoga in lignita ","Pridobivanje rjavega premoga in lignita ","Pridobivanje surove nafte in zemeljskega plina ","Pridobivanje surove nafte ","Pridobivanje surove nafte ","Pridobivanje surove nafte ","Pridobivanje zemeljskega plina ","Pridobivanje zemeljskega plina ","Pridobivanje zemeljskega plina ","Pridobivanje rud ","Pridobivanje železove rude ","Pridobivanje železove rude ","Pridobivanje železove rude ","Pridobivanje rud neželeznih kovin ","Pridobivanje uranove in torijeve rude ","Pridobivanje uranove in torijeve rude ","Pridobivanje rud drugih neželeznih kovin ","Pridobivanje rud drugih neželeznih kovin ","Pridobivanje rudnin in kamnin ","Pridobivanje kamna, peska in gline" ,"Pridobivanje kamna ","Pridobivanje kamna ","Pridobivanje gramoza, peska, gline" ,"Pridobivanje gramoza, peska, gline" ,"Pridobivanje drugih rudnin in kamnin ","Pridobivanje mineralov za kemikalije in gnojila ","Pridobivanje mineralov za kemikalije in gnojila ","Pridobivanje šote ","Pridobivanje šote ","Pridobivanje soli ","Pridobivanje soli ","Drugo pridobivanje rudnin in kamnin ","Drugo pridobivanje rudnin in kamnin ","Storitve za rudarstvo ","Storitve za pridobivanje nafte in zemeljskega plina ","Storitve za pridobivanje nafte in zemeljskega plina ","Storitve za pridobivanje nafte in zemeljskega plina ","Storitve za drugo rudarjenje ","Storitve za drugo rudarjenje ","Storitve za drugo rudarjenje ","PREDELOVALNE DEJAVNOSTI ","Proizvodnja živil ","Proizvodnja mesa in mesnih izdelkov ","Proizvodnja mesa, razen perutninskega" ,"Proizvodnja mesa, razen perutninskega" ,"Proizvodnja perutninskega mesa ","Proizvodnja perutninskega mesa ","Proizvodnja mesnih izdelkov ","Proizvodnja mesnih izdelkov ","Predelava in konzerviranje rib, rakov in mehkužcev" ,"Predelava in konzerviranje rib, rakov in mehkužcev" ,"Predelava in konzerviranje rib, rakov in mehkužcev" ,"Predelava in konzerviranje sadja in zelenjave ","Predelava in konzerviranje krompirja ","Predelava in konzerviranje krompirja ","Proizvodnja sadnih in zelenjavnih sokov ","Proizvodnja sadnih in zelenjavnih sokov ","Druga predelava in konzerviranje sadja in zelenjave ","Druga predelava in konzerviranje sadja in zelenjave ","Proizvodnja rastlinskih in živalskih olj in mašèob ","Proizvodnja olja in mašèob ","Proizvodnja olja in mašèob ","Proizvodnja margarine in podobnih jedilnih mašèob ","Proizvodnja margarine in podobnih jedilnih mašèob ","Predelava mleka ","Mlekarstvo in sirarstvo ","Mlekarstvo in sirarstvo ","Proizvodnja sladoleda ","Proizvodnja sladoleda ","Mlinarstvo, proizvodnja škroba in škrobnih izdelkov" ,"Mlinarstvo ","Mlinarstvo ","Proizvodnja škroba in škrobnih izdelkov ","Proizvodnja škroba in škrobnih izdelkov ","Proizvodnja pekarskih izdelkov in testenin ","Proizvodnja kruha, svežega peciva in slašèic" ,"Proizvodnja kruha, svežega peciva in slašèic" ,"Proizvodnja prepeèenca in piškotov, proizvodnja trajnega peciva in slašèic" ,"Proizvodnja prepeèenca in piškotov, proizvodnja trajnega peciva in slašèic" ,"Proizvodnja testenin ","Proizvodnja testenin ","Proizvodnja drugih prehrambenih izdelkov ","Proizvodnja sladkorja ","Proizvodnja sladkorja ","Proizvodnja kakava, èokolade in sladkornih izdelkov" ,"Proizvodnja kakava, èokolade in sladkornih izdelkov" ,"Predelava èaja in kave ","Predelava èaja in kave ","Proizvodnja zaèimb, dišav in drugih dodatkov" ,"Proizvodnja zaèimb, dišav in drugih dodatkov" ,"Proizvodnja pripravljenih jedi in obrokov ","Proizvodnja pripravljenih jedi in obrokov ","Proizvodnja homogeniziranih in dietetiènih živil ","Proizvodnja homogeniziranih in dietetiènih živil ","Proizvodnja drugih prehrambenih izdelkov, drugje nerazvršèenih" ,"Proizvodnja drugih prehrambenih izdelkov, drugje nerazvršèenih" ,"Proizvodnja krmil in hrane za hišne živali ","Proizvodnja krmil ","Proizvodnja krmil ","Proizvodnja hrane za hišne živali ","Proizvodnja hrane za hišne živali ","Proizvodnja pijaè ","Proizvodnja pijaè ","Proizvodnja žganih pijaè ","Proizvodnja žganih pijaè ","Proizvodnja vina iz grozdja ","Proizvodnja vina iz grozdja ","Proizvodnja sadnih vin in podobnih fermentiranih pijaè ","Proizvodnja sadnih vin in podobnih fermentiranih pijaè ","Proizvodnja aromatiziranih vin iz grozdja ","Proizvodnja aromatiziranih vin iz grozdja ","Proizvodnja piva ","Proizvodnja piva ","Proizvodnja slada ","Proizvodnja slada ","Proizvodnja brezalkoholnih pijaè, mineralnih in drugih steklenièenih vod" ,"Proizvodnja brezalkoholnih pijaè, mineralnih in drugih steklenièenih vod" ,"Proizvodnja tobaènih izdelkov ","Proizvodnja tobaènih izdelkov ","Proizvodnja tobaènih izdelkov ","Proizvodnja tobaènih izdelkov ","Proizvodnja tekstilij ","Priprava in predenje tekstilnih vlaken ","Priprava in predenje tekstilnih vlaken ","Priprava in predenje tekstilnih vlaken ","Tkanje tekstilij ","Tkanje tekstilij ","Tkanje tekstilij ","Dodelava tekstilij ","Dodelava tekstilij ","Dodelava tekstilij ","Proizvodnja drugih tekstilij ","Proizvodnja pletenih in kvaèkanih materialov ","Proizvodnja pletenih in kvaèkanih materialov ","Proizvodnja konènih tekstilnih izdelkov, razen oblaèil" ,"Proizvodnja konènih tekstilnih izdelkov, razen oblaèil" ,"Proizvodnja preprog ","Proizvodnja preprog ","Proizvodnja vrvi, vrvic in mrež" ,"Proizvodnja vrvi, vrvic in mrež" ,"Proizvodnja netkanih tekstilij in izdelkov iz njih, razen oblaèil" ,"Proizvodnja netkanih tekstilij in izdelkov iz njih, razen oblaèil" ,"Proizvodnja tehniènega in industrijskega tekstila ","Proizvodnja tehniènega in industrijskega tekstila ","Proizvodnja drugje nerazvršèenih tekstilij ","Proizvodnja drugje nerazvršèenih tekstilij ","Proizvodnja oblaèil ","Proizvodnja oblaèil, razen krznenih" ,"Proizvodnja usnjenih oblaèil ","Proizvodnja usnjenih oblaèil ","Proizvodnja delovnih oblaèil ","Proizvodnja delovnih oblaèil ","Proizvodnja drugih vrhnjih oblaèil ","Proizvodnja drugih vrhnjih oblaèil ","Proizvodnja spodnjega perila ","Proizvodnja spodnjega perila ","Proizvodnja drugih oblaèil, pokrival ter dodatkov" ,"Proizvodnja drugih oblaèil, pokrival ter dodatkov" ,"Proizvodnja krznenih izdelkov ","Proizvodnja krznenih izdelkov ","Proizvodnja krznenih izdelkov ","Proizvodnja pletenih in kvaèkanih oblaèil ","Proizvodnja nogavic ","Proizvodnja nogavic ","Proizvodnja drugih pletenih in kvaèkanih oblaèil ","Proizvodnja drugih pletenih in kvaèkanih oblaèil ","Proizvodnja usnja, usnjenih in sorodnih izdelkov" ,"Strojenje in dodelava usnja in krzna, proizvodnja potovalne galanterije in sedlarskih izdelkov" ,"Strojenje in dodelava usnja in krzna ","Strojenje in dodelava usnja in krzna ","Proizvodnja potovalne galanterije, sedlarskih in jermenarskih izdelkov" ,"Proizvodnja potovalne galanterije, sedlarskih in jermenarskih izdelkov" ,"Proizvodnja obutve ","Proizvodnja obutve ","Proizvodnja obutve ","Obdelava in predelava lesa, proizvodnja izdelkov iz lesa, plute, slame in protja, razen pohištva" ,"Žaganje, skobljanje in impregniranje lesa" ,"Žaganje, skobljanje in impregniranje lesa" ,"Žaganje, skobljanje in impregniranje lesa" ,"Proizvodnja lesenih, plutovinastih, pletarskih izdelkov" ,"Proizvodnja furnirja in plošè na osnovi lesa ","Proizvodnja furnirja in plošè na osnovi lesa ","Proizvodnja sestavljenega parketa ","Proizvodnja sestavljenega parketa ","Stavbno mizarstvo in tesarstvo ","Stavbno mizarstvo in tesarstvo ","Proizvodnja lesene embalaže ","Proizvodnja lesene embalaže ","Proizvodnja drugih izdelkov iz lesa, plute, slame in protja" ,"Proizvodnja drugih izdelkov iz lesa, plute, slame in protja" ,"Proizvodnja papirja in izdelkov iz papirja ","Proizvodnja vlaknin, papirja in kartona" ,"Proizvodnja vlaknin ","Proizvodnja vlaknin ","Proizvodnja papirja in kartona ","Proizvodnja papirja in kartona ","Proizvodnja izdelkov iz papirja in kartona ","Proizvodnja valovitega papirja in kartona ter papirne in kartonske embalaže ","Proizvodnja valovitega papirja in kartona ter papirne in kartonske embalaže ","Proizvodnja gospodinjskih, higienskih in toaletnih potrebšèin iz papirja" ,"Proizvodnja gospodinjskih, higienskih in toaletnih potrebšèin iz papirja" ,"Proizvodnja pisarniških potrebšèin iz papirja ","Proizvodnja pisarniških potrebšèin iz papirja ","Proizvodnja tapet ","Proizvodnja tapet ","Proizvodnja drugih izdelkov iz papirja in kartona ","Proizvodnja drugih izdelkov iz papirja in kartona ","Tiskarstvo in razmnoževanje posnetih nosilcev zapisa ","Tiskarstvo in z njim povezane storitve ","Tiskanje èasopisov ","Tiskanje èasopisov ","Drugo tiskanje ","Drugo tiskanje ","Priprava za tisk in objavo ","Priprava za tisk in objavo ","Knjigoveštvo in sorodne dejavnosti ","Knjigoveštvo in sorodne dejavnosti ","Razmnoževanje posnetih nosilcev zapisa ","Razmnoževanje posnetih nosilcev zapisa ","Razmnoževanje posnetih nosilcev zapisa ","Proizvodnja koksa in naftnih derivatov ","Proizvodnja koksa ","Proizvodnja koksa ","Proizvodnja koksa ","Proizvodnja naftnih derivatov ","Proizvodnja naftnih derivatov ","Proizvodnja naftnih derivatov ","Proizvodnja kemikalij, kemiènih izdelkov" ,"Proizvodnja osnovnih kemikalij, gnojil in dušikovih spojin, plastiènih mas in sintetiènega kavèuka v primarni obliki" ,"Proizvodnja tehniènih plinov ","Proizvodnja tehniènih plinov ","Proizvodnja barvil in pigmentov ","Proizvodnja barvil in pigmentov ","Proizvodnja drugih anorganskih osnovnih kemikalij ","Proizvodnja drugih anorganskih osnovnih kemikalij ","Proizvodnja drugih organskih osnovnih kemikalij ","Proizvodnja drugih organskih osnovnih kemikalij ","Proizvodnja gnojil in dušikovih spojin ","Proizvodnja gnojil in dušikovih spojin ","Proizvodnja plastiènih mas v primarni obliki ","Proizvodnja plastiènih mas v primarni obliki ","Proizvodnja sintetiènega kavèuka v primarni obliki ","Proizvodnja sintetiènega kavèuka v primarni obliki ","Proizvodnja razkužil, pesticidov in drugih agrokemiènih izdelkov" ,"Proizvodnja razkužil, pesticidov in drugih agrokemiènih izdelkov" ,"Proizvodnja razkužil, pesticidov in drugih agrokemiènih izdelkov" ,"Proizvodnja barv, lakov in podobnih premazov, tiskarskih barv in kitov" ,"Proizvodnja barv, lakov in podobnih premazov, tiskarskih barv in kitov" ,"Proizvodnja barv, lakov in podobnih premazov, tiskarskih barv in kitov" ,"Proizvodnja mil in pralnih sredstev, èistilnih in polirnih sredstev, parfumov in toaletnih sredstev" ,"Proizvodnja mil in pralnih sredstev, èistilnih in polirnih sredstev" ,"Proizvodnja mil in pralnih sredstev, èistilnih in polirnih sredstev" ,"Proizvodnja parfumov in toaletnih sredstev ","Proizvodnja parfumov in toaletnih sredstev ","Proizvodnja razstreliv, lepil, eteriènih olj in drugih kemiènih izdelkov" ,"Proizvodnja razstreliv ","Proizvodnja razstreliv ","Proizvodnja sredstev za lepljenje ","Proizvodnja sredstev za lepljenje ","Proizvodnja eteriènih olj ","Proizvodnja eteriènih olj ","Proizvodnja drugih kemiènih izdelkov ","Proizvodnja drugih kemiènih izdelkov ","Proizvodnja umetnih vlaken ","Proizvodnja umetnih vlaken ","Proizvodnja umetnih vlaken ","Proizvodnja farmacevtskih surovin in preparatov ","Proizvodnja farmacevtskih surovin ","Proizvodnja farmacevtskih surovin ","Proizvodnja farmacevtskih surovin ","Proizvodnja farmacevtskih preparatov ","Proizvodnja farmacevtskih preparatov ","Proizvodnja farmacevtskih preparatov ","Proizvodnja izdelkov iz gume in plastiènih mas ","Proizvodnja izdelkov iz gume ","Proizvodnja in obnavljanje gumijastih plašèev in zraènic za vozila ","Proizvodnja in obnavljanje gumijastih plašèev in zraènic za vozila ","Proizvodnja drugih izdelkov iz gume ","Proizvodnja drugih izdelkov iz gume ","Proizvodnja plastiènih izdelkov ","Proizvodnja plošè, folij, cevi in profilov iz plastiènih mas" ,"Proizvodnja plošè, folij, cevi in profilov iz plastiènih mas" ,"Proizvodnja embalaže iz plastiènih mas ","Proizvodnja embalaže iz plastiènih mas ","Proizvodnja izdelkov iz plastiènih mas za gradbeništvo ","Proizvodnja izdelkov iz plastiènih mas za gradbeništvo ","Proizvodnja drugih izdelkov iz plastiènih mas ","Proizvodnja drugih izdelkov iz plastiènih mas ","Proizvodnja nekovinskih mineralnih izdelkov ","Proizvodnja stekla in steklenih izdelkov ","Proizvodnja ravnega stekla ","Proizvodnja ravnega stekla ","Oblikovanje in obdelava ravnega stekla ","Oblikovanje in obdelava ravnega stekla ","Proizvodnja votlega stekla ","Proizvodnja votlega stekla ","Proizvodnja steklenih vlaken ","Proizvodnja steklenih vlaken ","Proizvodnja in oblikovanje drugih vrst stekla ter tehniènih steklenih izdelkov ","Proizvodnja in oblikovanje drugih vrst stekla ter tehniènih steklenih izdelkov ","Proizvodnja ognjevzdržne keramike ","Proizvodnja ognjevzdržne keramike ","Proizvodnja ognjevzdržne keramike ","Proizvodnja neognjevzdržne gradbene keramike ","Proizvodnja keramiènih plošèic in oblog ","Proizvodnja keramiènih plošèic in oblog ","Proizvodnja strešnikov, opeke in drugih gradbenih izdelkov iz žgane gline" ,"Proizvodnja strešnikov, opeke in drugih gradbenih izdelkov iz žgane gline" ,"Proizvodnja drugih izdelkov iz keramike in porcelana ","Proizvodnja gospodinjske in okrasne keramike ","Proizvodnja gospodinjske in okrasne keramike ","Proizvodnja sanitarne keramike ","Proizvodnja sanitarne keramike ","Proizvodnja izolatorjev in izolacijskih elementov iz keramike ","Proizvodnja izolatorjev in izolacijskih elementov iz keramike ","Proizvodnja druge tehniène keramike ","Proizvodnja druge tehniène keramike ","Proizvodnja drugih keramiènih izdelkov ","Proizvodnja drugih keramiènih izdelkov ","Proizvodnja cementa, apna, mavca" ,"Proizvodnja cementa ","Proizvodnja cementa ","Proizvodnja apna in mavca ","Proizvodnja apna in mavca ","Proizvodnja izdelkov iz betona, cementa, mavca" ,"Proizvodnja betonskih izdelkov za gradbeništvo ","Proizvodnja betonskih izdelkov za gradbeništvo ","Proizvodnja izdelkov iz mavca za gradbeništvo ","Proizvodnja izdelkov iz mavca za gradbeništvo ","Proizvodnja sveže betonske mešanice ","Proizvodnja sveže betonske mešanice ","Proizvodnja malte ","Proizvodnja malte ","Proizvodnja izdelkov iz vlaknatega cementa ","Proizvodnja izdelkov iz vlaknatega cementa ","Proizvodnja drugih izdelkov iz betona, cementa, mavca" ,"Proizvodnja drugih izdelkov iz betona, cementa, mavca" ,"Obdelava naravnega kamna ","Obdelava naravnega kamna ","Obdelava naravnega kamna ","Proizvodnja brusilnih sredstev in drugih nekovinskih mineralnih izdelkov ","Proizvodnja brusilnih sredstev ","Proizvodnja brusilnih sredstev ","Proizvodnja drugih nekovinskih mineralnih izdelkov ","Proizvodnja drugih nekovinskih mineralnih izdelkov ","Proizvodnja kovin ","Proizvodnja surovega železa, jekla, ferozlitin" ,"Proizvodnja surovega železa, jekla, ferozlitin" ,"Proizvodnja surovega železa, jekla, ferozlitin" ,"Proizvodnja jeklenih cevi, votlih profilov in fitingov" ,"Proizvodnja jeklenih cevi, votlih profilov in fitingov" ,"Proizvodnja jeklenih cevi, votlih profilov in fitingov" ,"Druga primarna predelava železa in jekla ","Hladno vleèenje profilov ","Hladno vleèenje profilov ","Hladno valjanje traku ","Hladno valjanje traku ","Hladno oblikovanje profilov in pregibanje ","Hladno oblikovanje profilov in pregibanje ","Hladno vleèenje žice ","Hladno vleèenje žice ","Proizvodnja plemenitih in drugih neželeznih kovin ","Proizvodnja plemenitih kovin ","Proizvodnja plemenitih kovin ","Proizvodnja aluminija ","Proizvodnja aluminija ","Proizvodnja svinca, cinka in kositra" ,"Proizvodnja svinca, cinka in kositra" ,"Proizvodnja bakra ","Proizvodnja bakra ","Proizvodnja drugih neželeznih kovin ","Proizvodnja drugih neželeznih kovin ","Proizvodnja jedrskega goriva ","Proizvodnja jedrskega goriva ","Livarstvo ","Litje železa ","Litje železa ","Litje jekla ","Litje jekla ","Litje lahkih kovin ","Litje lahkih kovin ","Litje drugih neželeznih kovin ","Litje drugih neželeznih kovin ","Proizvodnja kovinskih izdelkov, razen strojev in naprav" ,"Proizvodnja gradbenih kovinskih izdelkov ","Proizvodnja kovinskih konstrukcij in njihovih delov ","Proizvodnja kovinskih konstrukcij in njihovih delov ","Proizvodnja kovinskega stavbnega pohištva ","Proizvodnja kovinskega stavbnega pohištva ","Proizvodnja kotlov za centralno ogrevanje, kovinskih rezervoarjev in cistern" ,"Proizvodnja radiatorjev in kotlov za centralno ogrevanje ","Proizvodnja radiatorjev in kotlov za centralno ogrevanje ","Proizvodnja drugih kovinskih rezervoarjev in cistern ","Proizvodnja drugih kovinskih rezervoarjev in cistern ","Proizvodnja parnih kotlov, razen kotlov za centralno ogrevanje" ,"Proizvodnja parnih kotlov, razen kotlov za centralno ogrevanje" ,"Proizvodnja parnih kotlov, razen kotlov za centralno ogrevanje" ,"Proizvodnja orožja in streliva ","Proizvodnja orožja in streliva ","Proizvodnja orožja in streliva ","Kovanje, stiskanje, vtiskovanje in valjanje kovin, prašna metalurgija" ,"Kovanje, stiskanje, vtiskovanje in valjanje kovin, prašna metalurgija" ,"Kovanje, stiskanje, vtiskovanje in valjanje kovin, prašna metalurgija" ,"Površinska obdelava in prekrivanje kovin, mehanska obdelava kovin" ,"Površinska obdelava in prekrivanje kovin ","Prekrivanje kovin s kovino ","Druga površinska in toplotna obdelava kovin ","Mehanska obdelava kovin ","Mehanska obdelava kovin ","Proizvodnja jedilnega pribora, kljuèavnic, okovja, orodja" ,"Proizvodnja rezil in jedilnega pribora ","Proizvodnja rezil in jedilnega pribora ","Proizvodnja kljuèavnic, okovja" ,"Proizvodnja kljuèavnic, okovja" ,"Proizvodnja orodja ","Proizvodnja roènega orodja ","Proizvodnja orodja za stroje ","Proizvodnja drugih kovinskih izdelkov ","Proizvodnja jeklenih bobnov, sodov in podobnih posod" ,"Proizvodnja jeklenih bobnov, sodov in podobnih posod" ,"Proizvodnja lahke kovinske embalaže ","Proizvodnja lahke kovinske embalaže ","Proizvodnja izdelkov iz žice, verig in vzmeti" ,"Proizvodnja izdelkov iz žice, verig in vzmeti" ,"Proizvodnja vijaènega materiala, vezi" ,"Proizvodnja vijaènega materiala, vezi" ,"Proizvodnja drugje nerazvršèenih kovinskih izdelkov ","Proizvodnja drugje nerazvršèenih kovinskih izdelkov ","Proizvodnja raèunalnikov, elektronskih in optiènih izdelkov" ,"Proizvodnja elektronskih komponent in plošè ","Proizvodnja elektronskih komponent ","Proizvodnja elektronskih komponent ","Proizvodnja elektronskih plošè ","Proizvodnja elektronskih plošè ","Proizvodnja raèunalnikov in perifernih naprav ","Proizvodnja raèunalnikov in perifernih naprav ","Proizvodnja raèunalnikov in perifernih naprav ","Proizvodnja komunikacijskih naprav ","Proizvodnja komunikacijskih naprav ","Proizvodnja komunikacijskih naprav ","Proizvodnja elektronskih naprav za široko rabo ","Proizvodnja elektronskih naprav za široko rabo ","Proizvodnja elektronskih naprav za široko rabo ","Proizvodnja merilnih, preizkuševalnih, navigacijskih instrumentov in naprav, proizvodnja ur" ,"Proizvodnja merilnih, preizkuševalnih in navigacijskih instrumentov in naprav" ,"Proizvodnja merilnih, preizkuševalnih in navigacijskih instrumentov in naprav" ,"Proizvodnja ur ","Proizvodnja ur ","Proizvodnja sevalnih, elektromedicinskih in elektroterapevtskih naprav" ,"Proizvodnja sevalnih, elektromedicinskih in elektroterapevtskih naprav" ,"Proizvodnja sevalnih, elektromedicinskih in elektroterapevtskih naprav" ,"Proizvodnja optiènih instrumentov in fotografske opreme ","Proizvodnja optiènih instrumentov in fotografske opreme ","Proizvodnja optiènih instrumentov in fotografske opreme ","Proizvodnja magnetnih in optiènih nosilcev zapisa ","Proizvodnja magnetnih in optiènih nosilcev zapisa ","Proizvodnja magnetnih in optiènih nosilcev zapisa ","Proizvodnja elektriènih naprav ","Proizvodnja elektromotorjev, generatorjev, transformatorjev ter naprav za distribucijo in krmiljenje elektrike" ,"Proizvodnja elektromotorjev, generatorjev in transformatorjev" ,"Proizvodnja elektromotorjev, generatorjev in transformatorjev" ,"Proizvodnja naprav za distribucijo in krmiljenje elektrike ","Proizvodnja naprav za distribucijo in krmiljenje elektrike ","Proizvodnja baterij in akumulatorjev ","Proizvodnja baterij in akumulatorjev ","Proizvodnja baterij in akumulatorjev ","Proizvodnja oplašèenih vodnikov in naprav za ožièenje ","Proizvodnja kablov iz optiènih vlaken ","Proizvodnja kablov iz optiènih vlaken ","Proizvodnja drugih elektriènih kablov in žic ","Proizvodnja drugih elektriènih kablov in žic ","Proizvodnja vtiènic, stikal in drugih naprav za ožièenje" ,"Proizvodnja vtiènic, stikal in drugih naprav za ožièenje" ,"Proizvodnja naprav in opreme za razsvetljavo ","Proizvodnja naprav in opreme za razsvetljavo ","Proizvodnja naprav in opreme za razsvetljavo ","Proizvodnja gospodinjskih naprav ","Proizvodnja elektriènih gospodinjskih naprav ","Proizvodnja elektriènih gospodinjskih naprav ","Proizvodnja neelektriènih gospodinjskih naprav ","Proizvodnja neelektriènih gospodinjskih naprav ","Proizvodnja drugih elektriènih naprav ","Proizvodnja drugih elektriènih naprav ","Proizvodnja drugih elektriènih naprav ","Proizvodnja drugih strojev in naprav ","Proizvodnja strojev za splošne namene ","Proizvodnja motorjev in turbin, razen za letala in motorna vozila" ,"Proizvodnja motorjev in turbin, razen za letala in motorna vozila" ,"Proizvodnja naprav za fluidno tehniko ","Proizvodnja naprav za fluidno tehniko ","Proizvodnja èrpalk in kompresorjev ","Proizvodnja èrpalk in kompresorjev ","Proizvodnja pip in ventilov ","Proizvodnja pip in ventilov ","Proizvodnja ležajev, zobnikov in elementov za mehanski prenos energije" ,"Proizvodnja ležajev, zobnikov in elementov za mehanski prenos energije" ,"Proizvodnja drugih naprav za splošne namene ","Proizvodnja peèi in gorilnikov ","Proizvodnja peèi in gorilnikov ","Proizvodnja dvigalnih in transportnih naprav ","Proizvodnja dvigalnih in transportnih naprav ","Proizvodnja pisarniških strojev in naprav [razen raèunalnikov in perifernih naprav] ","Proizvodnja pisarniških strojev in naprav [razen raèunalnikov in perifernih naprav] ","Proizvodnja roènih strojev in naprav ","Proizvodnja roènih strojev in naprav ","Proizvodnja hladilnih in prezraèevalnih naprav, razen za gospodinjstva" ,"Proizvodnja hladilnih in prezraèevalnih naprav, razen za gospodinjstva" ,"Proizvodnja drugih strojev in naprav za splošne namene ","Proizvodnja drugih strojev in naprav za splošne namene ","Proizvodnja kmetijskih in gozdarskih strojev ","Proizvodnja kmetijskih in gozdarskih strojev ","Proizvodnja kmetijskih in gozdarskih strojev ","Proizvodnja obdelovalnih strojev ","Proizvodnja strojev za oblikovanje in obdelavo kovin ","Proizvodnja strojev za oblikovanje in obdelavo kovin ","Proizvodnja drugih obdelovalnih strojev ","Proizvodnja drugih obdelovalnih strojev ","Proizvodnja drugih strojev za posebne namene ","Proizvodnja metalurških strojev ","Proizvodnja metalurških strojev ","Proizvodnja rudarskih in gradbenih strojev ","Proizvodnja rudarskih in gradbenih strojev ","Proizvodnja strojev za živilsko in tobaèno industrijo ","Proizvodnja strojev za živilsko in tobaèno industrijo ","Proizvodnja strojev za tekstilno, oblaèilno in usnjarsko industrijo" ,"Proizvodnja strojev za tekstilno, oblaèilno in usnjarsko industrijo" ,"Proizvodnja strojev za industrijo papirja in kartona ","Proizvodnja strojev za industrijo papirja in kartona ","Proizvodnja strojev za plastiko in gumo ","Proizvodnja strojev za plastiko in gumo ","Proizvodnja strojev za druge posebne namene ","Proizvodnja strojev za druge posebne namene ","Proizvodnja motornih vozil, prikolic in polprikolic" ,"Proizvodnja motornih vozil ","Proizvodnja motornih vozil ","Proizvodnja motornih vozil ","Proizvodnja karoserij za vozila, proizvodnja prikolic, polprikolic" ,"Proizvodnja karoserij za vozila, proizvodnja prikolic, polprikolic" ,"Proizvodnja karoserij za vozila, proizvodnja prikolic, polprikolic" ,"Proizvodnja delov in opreme za motorna vozila ","Proizvodnja elektriène in elektronske opreme za motorna vozila ","Proizvodnja elektriène in elektronske opreme za motorna vozila ","Proizvodnja drugih delov in opreme za motorna vozila ","Proizvodnja drugih delov in opreme za motorna vozila ","Proizvodnja drugih vozil in plovil ","Gradnja ladij in èolnov ","Gradnja ladij in plavajoèih konstrukcij ","Gradnja ladij in plavajoèih konstrukcij ","Proizvodnja èolnov za razvedrilo in šport ","Proizvodnja èolnov za razvedrilo in šport ","Proizvodnja železniških in drugih tirnih vozil ","Proizvodnja železniških in drugih tirnih vozil ","Proizvodnja železniških in drugih tirnih vozil ","Proizvodnja zraènih in vesoljskih plovil ","Proizvodnja zraènih in vesoljskih plovil ","Proizvodnja zraènih in vesoljskih plovil ","Proizvodnja bojnih vozil ","Proizvodnja bojnih vozil ","Proizvodnja bojnih vozil ","Proizvodnja drugih vozil ","Proizvodnja motornih koles ","Proizvodnja motornih koles ","Proizvodnja koles in invalidskih vozièkov ","Proizvodnja koles in invalidskih vozièkov ","Proizvodnja vprežnih in drugih vozil ","Proizvodnja vprežnih in drugih vozil ","Proizvodnja pohištva ","Proizvodnja pohištva ","Proizvodnja pohištva za poslovne in prodajne prostore ","Proizvodnja pohištva za poslovne in prodajne prostore ","Proizvodnja kuhinjskega pohištva ","Proizvodnja kuhinjskega pohištva ","Proizvodnja žimnic ","Proizvodnja žimnic ","Proizvodnja drugega pohištva ","Proizvodnja drugega pohištva ","Druge raznovrstne predelovalne dejavnosti ","Proizvodnja nakita, bižuterije in podobnih izdelkov" ,"Kovanje kovancev ","Kovanje kovancev ","Proizvodnja nakita in podobnih izdelkov ","Proizvodnja nakita in podobnih izdelkov ","Proizvodnja bižuterije ","Proizvodnja bižuterije ","Proizvodnja glasbil ","Proizvodnja glasbil ","Proizvodnja glasbil ","Proizvodnja športne opreme ","Proizvodnja športne opreme ","Proizvodnja športne opreme ","Proizvodnja igraè in rekvizitov za igre in zabavo ","Proizvodnja igraè in rekvizitov za igre in zabavo ","Proizvodnja igraè in rekvizitov za igre in zabavo ","Proizvodnja medicinskih instrumentov, naprav in pripomoèkov" ,"Proizvodnja medicinskih instrumentov, naprav in pripomoèkov" ,"Proizvodnja medicinskih instrumentov, naprav in pripomoèkov" ,"Druge predelovalne dejavnosti ","Proizvodnja metel in krtaè ","Proizvodnja metel in krtaè ","Drugje nerazvršèene predelovalne dejavnosti ","Drugje nerazvršèene predelovalne dejavnosti ","Popravila in montaža strojev in naprav ","Popravila kovinskih izdelkov, strojev in naprav" ,"Popravila kovinskih izdelkov ","Popravila kovinskih izdelkov ","Popravila strojev in naprav ","Popravila strojev in naprav ","Popravila elektronskih in optiènih naprav ","Popravila elektronskih in optiènih naprav ","Popravila elektriènih naprav ","Popravila elektriènih naprav ","Popravila in vzdrževanje ladij in èolnov ","Popravila in vzdrževanje ladij in èolnov ","Popravila in vzdrževanje zraènih in vesoljskih plovil ","Popravila in vzdrževanje zraènih in vesoljskih plovil ","Popravila in vzdrževanje drugih prevoznih sredstev ","Popravila in vzdrževanje drugih prevoznih sredstev ","Popravila drugih naprav ","Popravila drugih naprav ","Montaža industrijskih strojev in naprav ","Montaža industrijskih strojev in naprav ","Montaža industrijskih strojev in naprav ","OSKRBA Z ELEKTRIÈNO ENERGIJO, PLINOM IN PARO" ,"Oskrba z elektrièno energijo, plinom in paro" ,"Oskrba z elektrièno energijo ","Proizvodnja elektriène energije ","Proizvodnja elektrike v hidroelektrarnah ","Proizvodnja elektrike v termoelektrarnah, jedrskih elektrarnah" ,"Druga proizvodnja elektriène energije ","Prenos elektriène energije ","Prenos elektriène energije ","Distribucija elektriène energije ","Distribucija elektriène energije ","Trgovanje z elektrièno energijo ","Trgovanje z elektrièno energijo ","Oskrba s plinastimi gorivi ","Proizvodnja plina ","Proizvodnja plina ","Distribucija plinastih goriv po plinovodni mreži ","Distribucija plinastih goriv po plinovodni mreži ","Trgovanje s plinastimi gorivi po plinovodni mreži ","Trgovanje s plinastimi gorivi po plinovodni mreži ","Oskrba s paro in vroèo vodo ","Oskrba s paro in vroèo vodo ","Oskrba s paro in vroèo vodo ","OSKRBA Z VODO, RAVNANJE Z ODPLAKAMI IN ODPADKI, SANIRANJE OKOLJA" ,"Zbiranje, preèišèevanje in distribucija vode" ,"Zbiranje, preèišèevanje in distribucija vode" ,"Zbiranje, preèišèevanje in distribucija vode" ,"Zbiranje, preèišèevanje in distribucija vode" ,"Ravnanje z odplakami ","Ravnanje z odplakami ","Ravnanje z odplakami ","Ravnanje z odplakami ","Zbiranje in odvoz odpadkov ter ravnanje z njimi, pridobivanje sekundarnih surovin" ,"Zbiranje in odvoz odpadkov ","Zbiranje in odvoz nenevarnih odpadkov ","Zbiranje in odvoz nenevarnih odpadkov ","Zbiranje in odvoz nevarnih odpadkov ","Zbiranje in odvoz nevarnih odpadkov ","Ravnanje z odpadki ","Ravnanje z nenevarnimi odpadki ","Ravnanje z nenevarnimi odpadki ","Ravnanje z nevarnimi odpadki ","Ravnanje z nevarnimi odpadki ","Pridobivanje sekundarnih surovin ","Demontaža odpadnih naprav ","Demontaža odpadnih naprav ","Pridobivanje sekundarnih surovin iz ostankov in odpadkov ","Pridobivanje sekundarnih surovin iz ostankov in odpadkov ","Saniranje okolja in drugo ravnanje z odpadki ","Saniranje okolja in drugo ravnanje z odpadki ","Saniranje okolja in drugo ravnanje z odpadki ","Saniranje okolja in drugo ravnanje z odpadki ","GRADBENIŠTVO ","Gradnja stavb ","Organizacija izvedbe stavbnih projektov ","Organizacija izvedbe stavbnih projektov ","Organizacija izvedbe stavbnih projektov ","Gradnja stanovanjskih in nestanovanjskih stavb ","Gradnja stanovanjskih in nestanovanjskih stavb ","Gradnja stanovanjskih in nestanovanjskih stavb ","Gradnja inženirskih objektov ","Gradnja cest in železnic ","Gradnja cest ","Gradnja cest ","Gradnja železnic in podzemnih železnic ","Gradnja železnic in podzemnih železnic ","Gradnja mostov in predorov ","Gradnja mostov in predorov ","Gradnja objektov oskrbne infrastrukture ","Gradnja objektov oskrbne infrastrukture za tekoèine in pline ","Gradnja objektov oskrbne infrastrukture za tekoèine in pline ","Gradnja objektov oskrbne infrastrukture za elektriko in telekomunikacije ","Gradnja objektov oskrbne infrastrukture za elektriko in telekomunikacije ","Gradnja drugih inženirskih objektov ","Gradnja vodnih objektov ","Gradnja vodnih objektov ","Gradnja drugih objektov nizke gradnje ","Gradnja drugih objektov nizke gradnje ","Specializirana gradbena dela ","Pripravljalna dela na gradbišèu ","Rušenje objektov ","Rušenje objektov ","Zemeljska pripravljalna dela ","Zemeljska pripravljalna dela ","Testno vrtanje in sondiranje ","Testno vrtanje in sondiranje ","Inštaliranje pri gradnjah ","Inštaliranje elektriènih napeljav in naprav ","Inštaliranje elektriènih napeljav in naprav ","Inštaliranje vodovodnih, plinskih in ogrevalnih napeljav in naprav" ,"Inštaliranje vodovodnih, plinskih in ogrevalnih napeljav in naprav" ,"Drugo inštaliranje pri gradnjah ","Drugo inštaliranje pri gradnjah ","Zakljuèna gradbena dela ","Fasaderska in štukaterska dela ","Fasaderska in štukaterska dela ","Vgrajevanje stavbnega pohištva ","Vgrajevanje stavbnega pohištva ","Oblaganje tal in sten ","Oblaganje tal in sten ","Steklarska in pleskarska dela ","Steklarska dela ","Pleskarska dela ","Druga zakljuèna gradbena dela ","Druga zakljuèna gradbena dela ","Krovstvo in druga specializirana gradbena dela ","Postavljanje ostrešij in krovska dela ","Postavljanje ostrešij in krovska dela ","Druga specializirana gradbena dela ","Druga specializirana gradbena dela ","TRGOVINA, VZDRŽEVANJE IN POPRAVILA MOTORNIH VOZIL" ,"Trgovina z motornimi vozili in popravila motornih vozil ","Trgovina z motornimi vozili ","Trgovina z avtomobili in lahkimi motornimi vozili ","Trgovina z avtomobili in lahkimi motornimi vozili ","Trgovina z drugimi motornimi vozili ","Trgovina z drugimi motornimi vozili ","Vzdrževanje in popravila motornih vozil ","Vzdrževanje in popravila motornih vozil ","Vzdrževanje in popravila motornih vozil ","Trgovina z rezervnimi deli in opremo za motorna vozila ","Trgovina na debelo z rezervnimi deli in opremo za motorna vozila ","Trgovina na debelo z rezervnimi deli in opremo za motorna vozila ","Trgovina na drobno z rezervnimi deli in opremo za motorna vozila ","Trgovina na drobno z rezervnimi deli in opremo za motorna vozila ","Trgovina, vzdrževanje in popravila motornih koles, trgovina z njihovimi deli in opremo" ,"Trgovina, vzdrževanje in popravila motornih koles, trgovina z njihovimi deli in opremo" ,"Trgovina, vzdrževanje in popravila motornih koles, trgovina z njihovimi deli in opremo" ,"Posredništvo in trgovina na debelo, razen z motornimi vozili" ,"Posredništvo ","Posredništvo pri prodaji kmetijskih surovin, živih živali, tekstilnih surovin, polizdelkov" ,"Posredništvo pri prodaji kmetijskih surovin, živih živali, tekstilnih surovin, polizdelkov" ,"Posredništvo pri prodaji goriv, rud, kovin, tehniènih kemikalij" ,"Posredništvo pri prodaji goriv, rud, kovin, tehniènih kemikalij" ,"Posredništvo pri prodaji lesa in gradbenega materiala ","Posredništvo pri prodaji lesa in gradbenega materiala ","Posredništvo pri prodaji strojev, industrijske opreme, ladij, letal" ,"Posredništvo pri prodaji strojev, industrijske opreme, ladij, letal" ,"Posredništvo pri prodaji pohištva, predmetov in naprav za gospodinjstvo in železnine" ,"Posredništvo pri prodaji pohištva, predmetov in naprav za gospodinjstvo in železnine" ,"Posredništvo pri prodaji tekstila, oblaèil, krzna, obutve, usnjenih izdelkov" ,"Posredništvo pri prodaji tekstila, oblaèil, krzna, obutve, usnjenih izdelkov" ,"Posredništvo pri prodaji živil, pijaè, tobaènih izdelkov" ,"Posredništvo pri prodaji živil, pijaè, tobaènih izdelkov" ,"Specializirano posredništvo pri prodaji drugih doloèenih izdelkov ","Specializirano posredništvo pri prodaji drugih doloèenih izdelkov ","Nespecializirano posredništvo pri prodaji raznovrstnih izdelkov ","Nespecializirano posredništvo pri prodaji raznovrstnih izdelkov ","Trgovina na debelo s kmetijskimi surovinami in živimi živalmi ","Trgovina na debelo z žiti, tobakom, semeni in krmo" ,"Trgovina na debelo z žiti, tobakom, semeni in krmo" ,"Trgovina na debelo s cvetjem in rastlinami ","Trgovina na debelo s cvetjem in rastlinami ","Trgovina na debelo z živimi živalmi ","Trgovina na debelo z živimi živalmi ","Trgovina na debelo s kožami, usnjem" ,"Trgovina na debelo s kožami, usnjem" ,"Trgovina na debelo z živili, pijaèami, tobaènimi izdelki" ,"Trgovina na debelo s sadjem in zelenjavo ","Trgovina na debelo s sadjem in zelenjavo ","Trgovina na debelo z mesom in mesnimi izdelki ","Trgovina na debelo z mesom in mesnimi izdelki ","Trgovina na debelo z mlekom, mleènimi izdelki, jajci, jedilnimi olji in mašèobami" ,"Trgovina na debelo z mlekom, mleènimi izdelki, jajci, jedilnimi olji in mašèobami" ,"Trgovina na debelo s pijaèami ","Trgovina na debelo s pijaèami ","Trgovina na debelo s tobaènimi izdelki ","Trgovina na debelo s tobaènimi izdelki ","Trgovina na debelo s sladkorjem, èokolado, sladkornimi izdelki" ,"Trgovina na debelo s sladkorjem, èokolado, sladkornimi izdelki" ,"Trgovina na debelo s kavo, èajem, kakavom, zaèimbami" ,"Trgovina na debelo s kavo, èajem, kakavom, zaèimbami" ,"Trgovina na debelo z drugimi živili, tudi z ribami, raki, mehkužci" ,"Trgovina na debelo z drugimi živili, tudi z ribami, raki, mehkužci" ,"Nespecializirana trgovina na debelo z živili, pijaèami, tobaènimi izdelki" ,"Nespecializirana trgovina na debelo z živili, pijaèami, tobaènimi izdelki" ,"Trgovina na debelo z izdelki za široko rabo ","Trgovina na debelo s tekstilom ","Trgovina na debelo s tekstilom ","Trgovina na debelo z oblaèili in obutvijo ","Trgovina na debelo z oblaèili in obutvijo ","Trgovina na debelo z elektriènimi gospodinjskimi napravami ","Trgovina na debelo z elektriènimi gospodinjskimi napravami ","Trgovina na debelo s porcelanom, steklenino, èistili" ,"Trgovina na debelo s porcelanom, steklenino, èistili" ,"Trgovina na debelo s parfumi in kozmetiko ","Trgovina na debelo s parfumi in kozmetiko ","Trgovina na debelo s farmacevtskimi izdelki ter medicinskimi potrebšèinami in materiali ","Trgovina na debelo s farmacevtskimi izdelki ter medicinskimi potrebšèinami in materiali ","Trgovina na debelo s pohištvom, preprogami in svetili" ,"Trgovina na debelo s pohištvom, preprogami in svetili" ,"Trgovina na debelo z urami in nakitom ","Trgovina na debelo z urami in nakitom ","Trgovina na debelo z drugimi izdelki široke porabe ","Trgovina na debelo z drugimi izdelki široke porabe ","Trgovina na debelo z napravami za informacijsko-komunikacijsko tehnologijo ","Trgovina na debelo z raèunalniškimi napravami ","Trgovina na debelo z raèunalniškimi napravami ","Trgovina na debelo z elektronskimi in telekomunikacijskimi napravami in deli ","Trgovina na debelo z elektronskimi in telekomunikacijskimi napravami in deli ","Trgovina na debelo s stroji, napravami, opremo" ,"Trgovina na debelo s kmetijskimi stroji, prikljuèki, opremo" ,"Trgovina na debelo s kmetijskimi stroji, prikljuèki, opremo" ,"Trgovina na debelo z obdelovalnimi stroji ","Trgovina na debelo z obdelovalnimi stroji ","Trgovina na debelo z rudarskimi in gradbenimi stroji ","Trgovina na debelo z rudarskimi in gradbenimi stroji ","Trgovina na debelo s stroji za tekstilno industrijo ","Trgovina na debelo s stroji za tekstilno industrijo ","Trgovina na debelo s pisarniškim pohištvom ","Trgovina na debelo s pisarniškim pohištvom ","Trgovina na debelo s pisarniškimi stroji in opremo ","Trgovina na debelo s pisarniškimi stroji in opremo ","Trgovina na debelo z drugimi napravami in opremo ","Trgovina na debelo z drugimi napravami in opremo ","Druga specializirana trgovina na debelo ","Trgovina na debelo s trdimi, tekoèimi in plinastimi gorivi" ,"Trgovina na debelo s trdimi, tekoèimi in plinastimi gorivi" ,"Trgovina na debelo s kovinami in rudami ","Trgovina na debelo s kovinami in rudami ","Trgovina na debelo z lesom, gradbenim materialom in sanitarno opremo" ,"Trgovina na debelo z lesom, gradbenim materialom in sanitarno opremo" ,"Trgovina na debelo s kovinskimi proizvodi, inštalacijskim materialom, napravami za ogrevanje" ,"Trgovina na debelo s kovinskimi proizvodi, inštalacijskim materialom, napravami za ogrevanje" ,"Trgovina na debelo s kemiènimi izdelki ","Trgovina na debelo s kemiènimi izdelki ","Trgovina na debelo z drugimi polizdelki ","Trgovina na debelo z drugimi polizdelki ","Trgovina na debelo z ostanki in odpadki ","Trgovina na debelo z ostanki in odpadki ","Nespecializirana trgovina na debelo ","Nespecializirana trgovina na debelo ","Nespecializirana trgovina na debelo ","Trgovina na drobno, razen z motornimi vozili" ,"Trgovina na drobno v nespecializiranih prodajalnah ","Trgovina na drobno v nespecializiranih prodajalnah, pretežno z živili" ,"Trgovina na drobno v nespecializiranih prodajalnah, pretežno z živili" ,"Druga trgovina na drobno v nespecializiranih prodajalnah ","Druga trgovina na drobno v nespecializiranih prodajalnah ","Trgovina na drobno v specializiranih prodajalnah z živili, pijaèami in tobaènimi izdelki" ,"Trgovina na drobno v specializiranih prodajalnah s sadjem in zelenjavo ","Trgovina na drobno v specializiranih prodajalnah s sadjem in zelenjavo ","Trgovina na drobno v specializiranih prodajalnah z mesom in mesnimi izdelki ","Trgovina na drobno v specializiranih prodajalnah z mesom in mesnimi izdelki ","Trgovina na drobno v specializiranih prodajalnah z ribami, raki, mehkužci" ,"Trgovina na drobno v specializiranih prodajalnah z ribami, raki, mehkužci" ,"Trgovina na drobno v specializiranih prodajalnah s kruhom, pecivom, testeninami, sladkornimi izdelki" ,"Trgovina na drobno v specializiranih prodajalnah s kruhom, pecivom, testeninami, sladkornimi izdelki" ,"Trgovina na drobno v specializiranih prodajalnah s pijaèami ","Trgovina na drobno v specializiranih prodajalnah s pijaèami ","Trgovina na drobno v specializiranih prodajalnah s tobaènimi izdelki ","Trgovina na drobno v specializiranih prodajalnah s tobaènimi izdelki ","Druga trgovina na drobno v specializiranih prodajalnah z živili ","Druga trgovina na drobno v specializiranih prodajalnah z živili ","Trgovina na drobno v specializiranih prodajalnah z motornimi gorivi ","Trgovina na drobno v specializiranih prodajalnah z motornimi gorivi ","Trgovina na drobno z lastnimi motornimi gorivi ","Posredništvo pri prodaji motornih goriv na drobno ","Trgovina na drobno v specializiranih prodajalnah z raèunalniškimi, komunikacijskimi, avdio in video napravami" ,"Trgovina na drobno v specializiranih prodajalnah z raèunalniškimi napravami in programi ","Trgovina na drobno v specializiranih prodajalnah z raèunalniškimi napravami in programi ","Trgovina na drobno v specializiranih prodajalnah s telekomunikacijskimi napravami ","Trgovina na drobno v specializiranih prodajalnah s telekomunikacijskimi napravami ","Trgovina na drobno v specializiranih prodajalnah z avdio in video napravami ","Trgovina na drobno v specializiranih prodajalnah z avdio in video napravami ","Trgovina na drobno v specializiranih prodajalnah z drugo gospodinjsko opremo ","Trgovina na drobno v specializiranih prodajalnah s tekstilom ","Trgovina na drobno v specializiranih prodajalnah s tekstilom ","Trgovina na drobno v specializiranih prodajalnah z gradbenim materialom, kovinskimi izdelki, barvami in steklom" ,"Trgovina na drobno v specializiranih prodajalnah z gradbenim materialom, kovinskimi izdelki, barvami in steklom" ,"Trgovina na drobno v specializiranih prodajalnah s preprogami, talnimi in stenskimi oblogami" ,"Trgovina na drobno v specializiranih prodajalnah s preprogami, talnimi in stenskimi oblogami" ,"Trgovina na drobno v specializiranih prodajalnah z elektriènimi gospodinjskimi napravami ","Trgovina na drobno v specializiranih prodajalnah z elektriènimi gospodinjskimi napravami ","Trgovina na drobno v specializiranih prodajalnah s pohištvom, svetili in drugje nerazvršèenimi predmeti za gospodinjstvo" ,"Trgovina na drobno v specializiranih prodajalnah s pohištvom, svetili in drugje nerazvršèenimi predmeti za gospodinjstvo" ,"Trgovina na drobno v specializiranih prodajalnah z izdelki za kulturo, šport in zabavo" ,"Trgovina na drobno v specializiranih prodajalnah s knjigami ","Trgovina na drobno v specializiranih prodajalnah s knjigami ","Trgovina na drobno v specializiranih prodajalnah s èasopisi, revijami, papirjem, pisalnimi potrebšèinami" ,"Trgovina na drobno v specializiranih prodajalnah s èasopisi in revijami ","Trgovina na drobno v specializiranih prodajalnah s papirjem in pisalnimi potrebšèinami ","Trgovina na drobno v specializiranih prodajalnah z glasbenimi in video zapisi ","Trgovina na drobno v specializiranih prodajalnah z glasbenimi in video zapisi ","Trgovina na drobno v specializiranih prodajalnah s športno opremo ","Trgovina na drobno v specializiranih prodajalnah s športno opremo ","Trgovina na drobno v specializiranih prodajalnah z igraèami in rekviziti za igre in zabavo ","Trgovina na drobno v specializiranih prodajalnah z igraèami in rekviziti za igre in zabavo ","Trgovina na drobno v specializiranih prodajalnah z drugimi izdelki ","Trgovina na drobno v specializiranih prodajalnah z oblaèili ","Trgovina na drobno v specializiranih prodajalnah z oblaèili ","Trgovina na drobno v specializiranih prodajalnah z obutvijo in usnjenimi izdelki ","Trgovina na drobno v specializiranih prodajalnah z obutvijo in usnjenimi izdelki ","Trgovina na drobno v specializiranih prodajalnah s farmacevtskimi izdelki ","Trgovina na drobno v specializiranih prodajalnah s farmacevtskimi izdelki ","Trgovina na drobno v specializiranih prodajalnah z medicinskimi in ortopedskimi pripomoèki ","Trgovina na drobno v specializiranih prodajalnah z medicinskimi in ortopedskimi pripomoèki ","Trgovina na drobno v specializiranih prodajalnah s kozmetiènimi in toaletnimi izdelki ","Trgovina na drobno v specializiranih prodajalnah s kozmetiènimi in toaletnimi izdelki ","Trgovina na drobno v specializiranih prodajalnah s cvetjem, rastlinami, gnojili, hišnimi živalmi in hrano za živali" ,"Trgovina na drobno v cvetlièarnah ","Trgovina na drobno v specializiranih prodajalnah z vrtnarsko opremo in hišnimi živalmi ","Trgovina na drobno v specializiranih prodajalnah z urami in nakitom ","Trgovina na drobno v specializiranih prodajalnah z urami in nakitom ","Druga trgovina na drobno v specializiranih prodajalnah z novim blagom ","Trgovina na drobno v specializiranih prodajalnah z oèali ","Trgovina na drobno v specializiranih prodajalnah z umetniškimi izdelki ","Druga trgovina na drobno v drugih specializiranih prodajalnah ","Trgovina na drobno v prodajalnah z rabljenim blagom ","Trgovina na drobno v prodajalnah z rabljenim blagom ","Trgovina na drobno na stojnicah in tržnicah ","Trgovina na drobno na stojnicah in tržnicah z živili, pijaèami in tobaènimi izdelki" ,"Trgovina na drobno na stojnicah in tržnicah z živili, pijaèami in tobaènimi izdelki" ,"Trgovina na drobno na stojnicah in tržnicah s tekstilijami in obutvijo ","Trgovina na drobno na stojnicah in tržnicah s tekstilijami in obutvijo ","Trgovina na drobno na stojnicah in tržnicah z drugim blagom ","Trgovina na drobno na stojnicah in tržnicah z drugim blagom ","Trgovina na drobno zunaj prodajaln, stojnic in tržnic" ,"Trgovina na drobno po pošti ali po internetu ","Trgovina na drobno po pošti ali po internetu ","Druga trgovina na drobno zunaj prodajaln, stojnic in tržnic" ,"Druga trgovina na drobno zunaj prodajaln, stojnic in tržnic" ,"PROMET IN SKLADIŠÈENJE ","Kopenski promet, cevovodni transport" ,"Železniški potniški promet ","Železniški potniški promet ","Železniški potniški promet ","Železniški tovorni promet ","Železniški tovorni promet ","Železniški tovorni promet ","Drug kopenski potniški promet ","Mestni in primestni kopenski potniški promet ","Mestni in primestni kopenski potniški promet ","Obratovanje taksijev ","Obratovanje taksijev ","Drug kopenski potniški promet ","Medkrajevni in drug cestni potniški promet ","Obratovanje žiènic ","Cestni tovorni promet ter selitvena dejavnost ","Cestni tovorni promet ","Cestni tovorni promet ","Selitvena dejavnost ","Selitvena dejavnost ","Cevovodni transport ","Cevovodni transport ","Cevovodni transport ","Vodni promet ","Pomorski potniški promet ","Pomorski potniški promet ","Pomorski potniški promet ","Pomorski tovorni promet ","Pomorski tovorni promet ","Pomorski tovorni promet ","Potniški promet po celinskih vodah ","Potniški promet po celinskih vodah ","Potniški promet po celinskih vodah ","Tovorni promet po celinskih vodah ","Tovorni promet po celinskih vodah ","Tovorni promet po celinskih vodah ","Zraèni promet ","Potniški zraèni promet ","Potniški zraèni promet ","Potniški zraèni promet ","Tovorni zraèni in vesoljski promet ","Tovorni zraèni promet ","Tovorni zraèni promet ","Vesoljski promet ","Vesoljski promet ","Skladišèenje in spremljajoèe prometne dejavnosti ","Skladišèenje ","Skladišèenje ","Skladišèenje ","Spremljajoèe prometne dejavnosti ","Spremljajoèe storitvene dejavnosti v kopenskem prometu ","Spremljajoèe storitvene dejavnosti v kopenskem prometu ","Spremljajoèe storitvene dejavnosti v vodnem prometu ","Spremljajoèe storitvene dejavnosti v vodnem prometu ","Spremljajoèe storitvene dejavnosti v zraènem prometu ","Spremljajoèe storitvene dejavnosti v zraènem prometu ","Pretovarjanje ","Pretovarjanje ","Špedicija in druge spremljajoèe prometne dejavnosti ","Špedicija in druge spremljajoèe prometne dejavnosti ","Poštna in kurirska dejavnost ","Izvajanje univerzalne poštne storitve ","Izvajanje univerzalne poštne storitve ","Izvajanje univerzalne poštne storitve ","Druga poštna in kurirska dejavnost ","Druga poštna in kurirska dejavnost ","Druga poštna in kurirska dejavnost ","GOSTINSTVO ","Gostinske nastanitvene dejavnosti ","Dejavnost hotelov in podobnih nastanitvenih obratov ","Dejavnost hotelov in podobnih nastanitvenih obratov ","Dejavnost hotelov in podobnih nastanitvenih obratov ","Dejavnost poèitniških domov in podobnih nastanitvenih obratov za kratkotrajno bivanje ","Dejavnost poèitniških domov in podobnih nastanitvenih obratov za kratkotrajno bivanje ","Poèitniški domovi in letovišèa ","Turistiène kmetije s sobami ","Oddajanje zasebnih sob gostom ","Planinski domovi in mladinska prenoèišèa ","Druge nastanitve za krajši èas ","Dejavnost avtokampov, taborov" ,"Dejavnost avtokampov, taborov" ,"Dejavnost avtokampov, taborov" ,"Dejavnost dijaških in študentskih domov ter druge nastanitve ","Dejavnost dijaških in študentskih domov ter druge nastanitve ","Dejavnost dijaških in študentskih domov ter druge nastanitve ","Dejavnost strežbe jedi in pijaè ","Dejavnost restavracij in druga strežba jedi ","Dejavnost restavracij in druga strežba jedi ","Restavracije in gostilne ","Okrepèevalnice in podobni obrati ","Slašèièarne in kavarne ","Zaèasni gostinski obrati ","Turistiène kmetije brez sob ","Priložnostna priprava in dostava jedi ter druga oskrba z jedmi ","Priložnostna priprava in dostava jedi ","Priložnostna priprava in dostava jedi ","Druga oskrba z jedmi ","Druga oskrba z jedmi ","Strežba pijaè ","Strežba pijaè ","Strežba pijaè ","INFORMACIJSKE IN KOMUNIKACIJSKE DEJAVNOSTI ","Založništvo ","Izdajanje knjig, periodike in drugo založništvo" ,"Izdajanje knjig ","Izdajanje knjig ","Izdajanje imenikov in adresarjev ","Izdajanje imenikov in adresarjev ","Izdajanje èasopisov ","Izdajanje èasopisov ","Izdajanje revij in druge periodike ","Izdajanje revij in druge periodike ","Drugo založništvo ","Drugo založništvo ","Izdajanje programja ","Izdajanje raèunalniških iger ","Izdajanje raèunalniških iger ","Drugo izdajanje programja ","Drugo izdajanje programja ","Dejavnosti v zvezi s filmi, video- in zvoènimi zapisi" ,"Filmska in video dejavnost ","Produkcija filmov, video filmov, televizijskih oddaj" ,"Produkcija filmov, video filmov, televizijskih oddaj" ,"Post produkcijske dejavnosti pri izdelavi filmov, video filmov, televizijskih oddaj" ,"Post produkcijske dejavnosti pri izdelavi filmov, video filmov, televizijskih oddaj" ,"Distribucija filmov, video filmov, televizijskih oddaj" ,"Distribucija filmov, video filmov, televizijskih oddaj" ,"Kinematografska dejavnost ","Kinematografska dejavnost ","Snemanje in izdajanje zvoènih zapisov in muzikalij ","Snemanje in izdajanje zvoènih zapisov in muzikalij ","Snemanje in izdajanje zvoènih zapisov in muzikalij ","Radijska in televizijska dejavnost ","Radijska dejavnost ","Radijska dejavnost ","Radijska dejavnost ","Televizijska dejavnost ","Televizijska dejavnost ","Televizijska dejavnost ","Telekomunikacijske dejavnosti ","Telekomunikacijske dejavnosti po vodih ","Telekomunikacijske dejavnosti po vodih ","Telekomunikacijske dejavnosti po vodih ","Brezžiène telekomunikacijske dejavnosti ","Brezžiène telekomunikacijske dejavnosti ","Brezžiène telekomunikacijske dejavnosti ","Satelitske telekomunikacijske dejavnosti ","Satelitske telekomunikacijske dejavnosti ","Satelitske telekomunikacijske dejavnosti ","Druge telekomunikacijske dejavnosti ","Druge telekomunikacijske dejavnosti ","Druge telekomunikacijske dejavnosti ","Raèunalniško programiranje, svetovanje in druge s tem povezane dejavnosti" ,"Raèunalniško programiranje, svetovanje in druge s tem povezane dejavnosti" ,"Raèunalniško programiranje ","Raèunalniško programiranje ","Svetovanje o raèunalniških napravah in programih ","Svetovanje o raèunalniških napravah in programih ","Upravljanje raèunalniških naprav in sistemov ","Upravljanje raèunalniških naprav in sistemov ","Druge z informacijsko tehnologijo in raèunalniškimi storitvami povezane dejavnosti ","Druge z informacijsko tehnologijo in raèunalniškimi storitvami povezane dejavnosti ","Druge informacijske dejavnosti ","Obdelava podatkov in s tem povezane dejavnosti, obratovanje spletnih portalov" ,"Obdelava podatkov in s tem povezane dejavnosti ","Obdelava podatkov in s tem povezane dejavnosti ","Obratovanje spletnih portalov ","Obratovanje spletnih portalov ","Dejavnosti tiskovnih agencij, drugo informiranje" ,"Dejavnost tiskovnih agencij ","Dejavnost tiskovnih agencij ","Drugo informiranje ","Drugo informiranje ","FINANÈNE IN ZAVAROVALNIŠKE DEJAVNOSTI ","Dejavnosti finanènih storitev, razen zavarovalništva in dejavnosti pokojninskih skladov" ,"Denarno posredništvo ","Centralno banèništvo ","Centralno banèništvo ","Drugo denarno posredništvo ","Drugo denarno posredništvo ","Dejavnost holdingov ","Dejavnost holdingov ","Dejavnost holdingov ","Dejavnost skrbniških in drugih skladov ter podobnih finanènih subjektov ","Dejavnost skrbniških in drugih skladov ter podobnih finanènih subjektov ","Dejavnost skrbniških in drugih skladov ter podobnih finanènih subjektov ","Dejavnosti finanènih storitev, razen zavarovalništva in dejavnosti pokojninskih skladov" ,"Dejavnost finanènega zakupa ","Dejavnost finanènega zakupa ","Drugo kreditiranje ","Drugo kreditiranje ","Drugje nerazvršèene dejavnosti finanènih storitev, razen zavarovalništva in dejavnosti pokojninskih skladov" ,"Drugje nerazvršèene dejavnosti finanènih storitev, razen zavarovalništva in dejavnosti pokojninskih skladov" ,"Dejavnosti zavarovanja, pozavarovanja in pokojninskih skladov, razen obvezne socialne varnosti" ,"Dejavnost zavarovanja ","Dejavnost življenjskega zavarovanja ","Dejavnost življenjskega zavarovanja ","Dejavnost zavarovanja, razen življenjskega" ,"Dejavnost zavarovanja, razen življenjskega" ,"Dejavnost pozavarovanja ","Dejavnost pozavarovanja ","Dejavnost pozavarovanja ","Dejavnost pokojninskih skladov ","Dejavnost pokojninskih skladov ","Dejavnost pokojninskih skladov ","Pomožne dejavnosti za finanène in zavarovalniške storitve ","Pomožne dejavnosti za finanène storitve, razen za zavarovalništvo in pokojninske sklade" ,"Upravljanje finanènih trgov ","Upravljanje finanènih trgov ","Posredništvo pri trgovanju z vrednostnimi papirji in borznim blagom ","Posredništvo pri trgovanju z vrednostnimi papirji in borznim blagom ","Druge pomožne dejavnosti za finanène storitve, razen za zavarovalništvo in pokojninske sklade" ,"Druge pomožne dejavnosti za finanène storitve, razen za zavarovalništvo in pokojninske sklade" ,"Pomožne dejavnosti za zavarovalništvo in pokojninske sklade ","Vrednotenje tveganja in škode ","Vrednotenje tveganja in škode ","Dejavnost zavarovalniških agentov ","Dejavnost zavarovalniških agentov ","Druge pomožne dejavnosti za zavarovalništvo in pokojninske sklade ","Druge pomožne dejavnosti za zavarovalništvo in pokojninske sklade ","Upravljanje finanènih skladov ","Upravljanje finanènih skladov ","Upravljanje finanènih skladov ","POSLOVANJE Z NEPREMIÈNINAMI ","Poslovanje z nepremièninami ","Trgovanje z lastnimi nepremièninami ","Trgovanje z lastnimi nepremièninami ","Trgovanje z lastnimi nepremièninami ","Oddajanje in obratovanje lastnih ali najetih nepremiènin ","Oddajanje in obratovanje lastnih ali najetih nepremiènin ","Oddajanje in obratovanje lastnih ali najetih nepremiènin ","Poslovanje z nepremièninami za plaèilo ali po pogodbi ","Posredništvo v prometu z nepremièninami ","Posredništvo v prometu z nepremièninami ","Upravljanje nepremiènin za plaèilo ali po pogodbi ","Upravljanje nepremiènin za plaèilo ali po pogodbi ","STROKOVNE, ZNANSTVENE IN TEHNIÈNE DEJAVNOSTI" ,"Pravne in raèunovodske dejavnosti ","Pravne dejavnosti ","Pravne dejavnosti ","Odvetništvo ","Notariat ","Druge pravne dejavnosti, razen zastopanja strank" ,"Raèunovodske, knjigovodske in revizijske dejavnosti, davèno svetovanje" ,"Raèunovodske, knjigovodske in revizijske dejavnosti, davèno svetovanje" ,"Raèunovodske, knjigovodske in revizijske dejavnosti, davèno svetovanje" ,"Dejavnost uprav podjetij, podjetniško in poslovno svetovanje" ,"Dejavnost uprav podjetij ","Dejavnost uprav podjetij ","Dejavnost uprav podjetij ","Podjetniško in poslovno svetovanje ","Dejavnost stikov z javnostjo ","Dejavnost stikov z javnostjo ","Drugo podjetniško in poslovno svetovanje ","Drugo podjetniško in poslovno svetovanje ","Arhitekturno in tehnièno projektiranje, tehnièno preizkušanje in analiziranje" ,"Arhitekturno in tehnièno projektiranje in s tem povezano svetovanje ","Arhitekturna in urbanistièna dejavnost ","Arhitekturno projektiranje ","Krajinsko arhitekturno, urbanistièno in drugo projektiranje" ,"Tehnièno projektiranje in s tem povezano svetovanje ","Geo-meritve, kartiranje" ,"Drugo tehnièno projektiranje in svetovanje ","Tehnièno preizkušanje in analiziranje ","Tehnièno preizkušanje in analiziranje ","Tehnièno preizkušanje in analiziranje ","Znanstvena raziskovalna in razvojna dejavnost ","Raziskovalna in razvojna dejavnost na podroèju naravoslovja in tehnologije ","Raziskovalna in razvojna dejavnost na podroèju biotehnologije ","Raziskovalna in razvojna dejavnost na podroèju biotehnologije ","Raziskovalna in razvojna dejavnost na drugih podroèjih naravoslovja in tehnologije ","Raziskovalna in razvojna dejavnost na drugih podroèjih naravoslovja in tehnologije ","Raziskovalna in razvojna dejavnost na podroèju družboslovja in humanistike ","Raziskovalna in razvojna dejavnost na podroèju družboslovja in humanistike ","Raziskovalna in razvojna dejavnost na podroèju družboslovja in humanistike ","Oglaševanje in raziskovanje trga ","Oglaševanje ","Dejavnost oglaševalskih agencij ","Dejavnost oglaševalskih agencij ","Posredovanje oglaševalskega prostora ","Posredovanje oglaševalskega prostora ","Raziskovanje trga in javnega mnenja ","Raziskovanje trga in javnega mnenja ","Raziskovanje trga in javnega mnenja ","Druge strokovne in tehniène dejavnosti ","Oblikovanje, aranžerstvo, dekoraterstvo" ,"Oblikovanje, aranžerstvo, dekoraterstvo" ,"Oblikovanje, aranžerstvo, dekoraterstvo" ,"Fotografska dejavnost ","Fotografska dejavnost ","Fotografska dejavnost ","Prevajanje in tolmaèenje ","Prevajanje in tolmaèenje ","Prevajanje in tolmaèenje ","Drugje nerazvršèene strokovne in tehniène dejavnosti ","Drugje nerazvršèene strokovne in tehniène dejavnosti ","Drugje nerazvršèene strokovne in tehniène dejavnosti ","Veterinarstvo ","Veterinarstvo ","Veterinarstvo ","Veterinarstvo ","DRUGE RAZNOVRSTNE POSLOVNE DEJAVNOSTI ","Dajanje v najem in zakup ","Dajanje motornih vozil v najem in zakup ","Dajanje lahkih motornih vozil v najem in zakup ","Dajanje lahkih motornih vozil v najem in zakup ","Dajanje tovornjakov v najem in zakup ","Dajanje tovornjakov v najem in zakup ","Dajanje športne opreme in izdelkov za široko rabo v najem in zakup ","Dajanje športne opreme v najem in zakup ","Dajanje športne opreme v najem in zakup ","Dajanje videokaset in plošè v najem ","Dajanje videokaset in plošè v najem ","Dajanje drugih izdelkov za široko rabo v najem in zakup ","Dajanje drugih izdelkov za široko rabo v najem in zakup ","Dajanje strojev, naprav in drugih opredmetenih sredstev v najem in zakup" ,"Dajanje kmetijskih strojev in opreme v najem in zakup ","Dajanje kmetijskih strojev in opreme v najem in zakup ","Dajanje gradbenih strojev in opreme v najem in zakup ","Dajanje gradbenih strojev in opreme v najem in zakup ","Dajanje pisarniške opreme in raèunalniških naprav v najem in zakup ","Dajanje pisarniške opreme in raèunalniških naprav v najem in zakup ","Dajanje vodnih plovil v najem in zakup ","Dajanje vodnih plovil v najem in zakup ","Dajanje zraènih plovil v najem in zakup ","Dajanje zraènih plovil v najem in zakup ","Dajanje drugih strojev, naprav in opredmetenih sredstev v najem in zakup" ,"Dajanje drugih strojev, naprav in opredmetenih sredstev v najem in zakup" ,"Dajanje pravic uporabe intelektualne lastnine v zakup, razen avtorsko zašèitenih del" ,"Dajanje pravic uporabe intelektualne lastnine v zakup, razen avtorsko zašèitenih del" ,"Dajanje pravic uporabe intelektualne lastnine v zakup, razen avtorsko zašèitenih del" ,"Zaposlovalne dejavnosti ","Dejavnost pri iskanju zaposlitve ","Dejavnost pri iskanju zaposlitve ","Dejavnost pri iskanju zaposlitve ","Posredovanje zaèasne delovne sile ","Posredovanje zaèasne delovne sile ","Posredovanje zaèasne delovne sile ","Druga oskrba s èloveškimi viri ","Druga oskrba s èloveškimi viri ","Druga oskrba s èloveškimi viri ","Dejavnost potovalnih agencij, organizatorjev potovanj in s potovanji povezanih dejavnosti" ,"Dejavnost potovalnih agencij in organizatorjev potovanj ","Dejavnost potovalnih agencij ","Dejavnost potovalnih agencij ","Dejavnost organizatorjev potovanj ","Dejavnost organizatorjev potovanj ","Rezervacije in druge s potovanji povezane dejavnosti ","Rezervacije in druge s potovanji povezane dejavnosti ","Rezervacije in druge s potovanji povezane dejavnosti ","Varovanje in poizvedovalne dejavnosti ","Varovanje ","Varovanje ","Varovanje ","Nadzorovanje delovanja varovalnih sistemov ","Nadzorovanje delovanja varovalnih sistemov ","Nadzorovanje delovanja varovalnih sistemov ","Poizvedovalne dejavnosti ","Poizvedovalne dejavnosti ","Poizvedovalne dejavnosti ","Dejavnost oskrbe stavb in okolice ","Vzdrževanje objektov in hišniška dejavnost ","Vzdrževanje objektov in hišniška dejavnost ","Vzdrževanje objektov in hišniška dejavnost ","Èišèenje ","Splošno èišèenje stavb ","Splošno èišèenje stavb ","Drugo èišèenje stavb, industrijskih naprav in opreme" ,"Drugo èišèenje stavb, industrijskih naprav in opreme" ,"Èišèenje cest in drugo èišèenje ","Èišèenje cest in drugo èišèenje ","Urejanje in vzdrževanje zelenih površin in okolice ","Urejanje in vzdrževanje zelenih površin in okolice ","Urejanje in vzdrževanje zelenih površin in okolice ","Pisarniške in spremljajoèe poslovne storitvene dejavnosti ","Pisarniške dejavnosti ","Nudenje celovitih pisarniških storitev ","Nudenje celovitih pisarniških storitev ","Fotokopiranje, priprava dokumentov in druge posamiène pisarniške dejavnosti" ,"Fotokopiranje, priprava dokumentov in druge posamiène pisarniške dejavnosti" ,"Dejavnost klicnih centrov ","Dejavnost klicnih centrov ","Dejavnost klicnih centrov ","Organiziranje razstav, sejmov, sreèanj" ,"Organiziranje razstav, sejmov, sreèanj" ,"Organiziranje razstav, sejmov, sreèanj" ,"Druge spremljajoèe dejavnosti za poslovanje ","Zbiranje terjatev in ocenjevanje kreditne sposobnosti ","Zbiranje terjatev in ocenjevanje kreditne sposobnosti ","Pakiranje ","Pakiranje ","Drugje nerazvršèene spremljajoèe dejavnosti za poslovanje ","Drugje nerazvršèene spremljajoèe dejavnosti za poslovanje ","DEJAVNOST JAVNE UPRAVE IN OBRAMBE, DEJAVNOST OBVEZNE SOCIALNE VARNOSTI" ,"Dejavnost javne uprave in obrambe, dejavnost obvezne socialne varnosti" ,"Dejavnost državne uprave ter ekonomska in socialna politika skupnosti ","Splošna dejavnost javne uprave ","Splošna dejavnost javne uprave ","Urejanje zdravstva, izobraževanja, kulturnih in drugih socialnih storitev, razen obvezne socialne varnosti" ,"Urejanje zdravstva, izobraževanja, kulturnih in drugih socialnih storitev, razen obvezne socialne varnosti" ,"Urejanje gospodarskih podroèij za uèinkovitejše poslovanje ","Urejanje gospodarskih podroèij za uèinkovitejše poslovanje ","Posebne dejavnosti za celotno družbeno skupnost ","Urejanje zunanjih zadev ","Urejanje zunanjih zadev ","Obramba ","Obramba ","Sodstvo ","Sodstvo ","Dejavnosti za javni red in varnost ","Dejavnosti za javni red in varnost ","Zašèita in reševanje pri požarih in nesreèah ","Zašèita in reševanje pri požarih in nesreèah ","Dejavnost obvezne socialne varnosti ","Dejavnost obvezne socialne varnosti ","Dejavnost obvezne socialne varnosti ","IZOBRAŽEVANJE ","Izobraževanje ","Predšolska vzgoja ","Predšolska vzgoja ","Predšolska vzgoja ","Osnovnošolsko izobraževanje ","Osnovnošolsko izobraževanje ","Osnovnošolsko izobraževanje ","Srednješolsko izobraževanje ","Srednješolsko splošno izobraževanje ","Srednješolsko splošno izobraževanje ","Srednješolsko poklicno in strokovno izobraževanje ","Srednješolsko poklicno in strokovno izobraževanje ","Posrednješolsko izobraževanje ","Posrednješolsko neterciarno izobraževanje ","Posrednješolsko neterciarno izobraževanje ","Višješolsko in visokošolsko izobraževanje ","Višješolsko izobraževanje ","Visokošolsko izobraževanje ","Drugo izobraževanje, izpopolnjevanje in usposabljanje" ,"Izobraževanje, izpopolnjevanje in usposabljanje na podroèju športa in rekreacije" ,"Izobraževanje, izpopolnjevanje in usposabljanje na podroèju športa in rekreacije" ,"Izobraževanje, izpopolnjevanje in usposabljanje na podroèju kulture in umetnosti" ,"Izobraževanje, izpopolnjevanje in usposabljanje na podroèju kulture in umetnosti" ,"Dejavnost vozniških šol ","Dejavnost vozniških šol ","Drugje nerazvršèeno izobraževanje, izpopolnjevanje in usposabljanje" ,"Drugje nerazvršèeno izobraževanje, izpopolnjevanje in usposabljanje" ,"Pomožne dejavnosti za izobraževanje ","Pomožne dejavnosti za izobraževanje ","Pomožne dejavnosti za izobraževanje ","ZDRAVSTVO IN SOCIALNO VARSTVO ","Zdravstvo ","Bolnišnièna zdravstvena dejavnost ","Bolnišnièna zdravstvena dejavnost ","Bolnišnièna zdravstvena dejavnost ","Zunajbolnišnièna zdravstvena in zobozdravstvena dejavnost ","Splošna zunajbolnišnièna zdravstvena dejavnost ","Splošna zunajbolnišnièna zdravstvena dejavnost ","Specialistièna zunajbolnišnièna zdravstvena dejavnost ","Specialistièna zunajbolnišnièna zdravstvena dejavnost ","Zobozdravstvena dejavnost ","Zobozdravstvena dejavnost ","Druge dejavnosti za zdravje ","Druge dejavnosti za zdravje ","Alternativne oblike zdravljenja ","Druge zdravstvene dejavnosti ","Socialno varstvo z nastanitvijo ","Dejavnost nastanitvenih ustanov za bolniško nego ","Dejavnost nastanitvenih ustanov za bolniško nego ","Dejavnost nastanitvenih ustanov za bolniško nego ","Dejavnost nastanitvenih ustanov za oskrbo duševno prizadetih, duševno obolelih in zasvojenih oseb" ,"Dejavnost nastanitvenih ustanov za oskrbo duševno prizadetih, duševno obolelih in zasvojenih oseb" ,"Dejavnost nastanitvenih ustanov za oskrbo duševno prizadetih, duševno obolelih in zasvojenih oseb" ,"Dejavnost nastanitvenih ustanov za oskrbo starejših in invalidnih oseb ","Dejavnost nastanitvenih ustanov za oskrbo starejših in invalidnih oseb ","Dejavnost nastanitvenih ustanov za oskrbo starejših in invalidnih oseb ","Drugo socialno varstvo z nastanitvijo ","Drugo socialno varstvo z nastanitvijo ","Drugo socialno varstvo z nastanitvijo ","Socialno varstvo brez nastanitve ","Socialno varstvo brez nastanitve za starejše in invalidne osebe ","Socialno varstvo brez nastanitve za starejše in invalidne osebe ","Dejavnost invalidskih podjetij ","Drugo socialno varstvo brez nastanitve za starejše in invalidne osebe ","Drugo socialno varstvo brez nastanitve ","Dnevno varstvo otrok ","Dnevno varstvo otrok ","Drugje nerazvršèeno socialno varstvo brez nastanitve ","Dejavnost humanitarnih in dobrodelnih organizacij ","Drugo drugje nerazvršèeno socialno varstvo brez nastanitve ","KULTURNE, RAZVEDRILNE IN REKREACIJSKE DEJAVNOSTI" ,"Kulturne in razvedrilne dejavnosti ","Kulturne in razvedrilne dejavnosti ","Umetniško uprizarjanje ","Umetniško uprizarjanje ","Spremljajoèe dejavnosti za umetniško uprizarjanje ","Spremljajoèe dejavnosti za umetniško uprizarjanje ","Umetniško ustvarjanje ","Umetniško ustvarjanje ","Obratovanje objektov za kulturne prireditve ","Obratovanje objektov za kulturne prireditve ","Dejavnost knjižnic, arhivov, muzejev in druge kulturne dejavnosti" ,"Dejavnost knjižnic, arhivov, muzejev in druge kulturne dejavnosti" ,"Dejavnost knjižnic in arhivov ","Dejavnost knjižnic ","Dejavnost arhivov ","Dejavnost muzejev ","Dejavnost muzejev ","Varstvo kulturne dedišèine ","Varstvo kulturne dedišèine ","Dejavnost botaniènih in živalskih vrtov, varstvo naravnih vrednot" ,"Dejavnost botaniènih in živalskih vrtov, varstvo naravnih vrednot" ,"Prirejanje iger na sreèo ","Prirejanje iger na sreèo ","Prirejanje iger na sreèo ","Dejavnost igralnic ","Prirejanje iger na sreèo, razen v igralnicah" ,"Športne in druge dejavnosti za prosti èas ","Športne dejavnosti ","Obratovanje športnih objektov ","Obratovanje športnih objektov ","Dejavnost športnih klubov ","Dejavnost športnih klubov ","Obratovanje fitnes objektov ","Obratovanje fitnes objektov ","Druge športne dejavnosti ","Druge športne dejavnosti ","Druge dejavnosti za prosti èas ","Dejavnost zabavišènih parkov ","Dejavnost zabavišènih parkov ","Drugje nerazvršèene dejavnosti za prosti èas ","Dejavnost marin ","Dejavnost smuèarskih centrov ","Druge nerazvršèene dejavnosti za prosti èas ","DRUGE DEJAVNOSTI ","Dejavnost èlanskih organizacij ","Dejavnost poslovnih, delodajalskih in strokovnih združenj" ,"Dejavnost poslovnih in delodajalskih združenj ","Dejavnost poslovnih in delodajalskih združenj ","Dejavnost strokovnih združenj ","Dejavnost strokovnih združenj ","Dejavnost sindikatov ","Dejavnost sindikatov ","Dejavnost sindikatov ","Dejavnost drugih èlanskih organizacij ","Dejavnost verskih organizacij ","Dejavnost verskih organizacij ","Dejavnost politiènih organizacij ","Dejavnost politiènih organizacij ","Dejavnost drugje nerazvršèenih èlanskih organizacij ","Dejavnost invalidskih organizacij ","Dejavnost drugje nerazvršèenih èlanskih organizacij ","Popravila raèunalnikov in izdelkov za široko rabo ","Popravila in vzdrževanje raèunalnikov in komunikacijskih naprav ","Popravila in vzdrževanje raèunalnikov in perifernih enot ","Popravila in vzdrževanje raèunalnikov in perifernih enot ","Popravila komunikacijskih naprav ","Popravila komunikacijskih naprav ","Popravila izdelkov za široko rabo ","Popravila elektronskih naprav za široko rabo ","Popravila elektronskih naprav za široko rabo ","Popravila gospodinjskih in hišnih naprav in opreme ","Popravila gospodinjskih in hišnih naprav in opreme ","Popravila obutve in usnjene galanterije ","Popravila obutve in usnjene galanterije ","Popravila pohištva ","Popravila pohištva ","Popravila ur in nakita ","Popravila ur in nakita ","Popravila drugih osebnih ali gospodinjskih izdelkov ","Popravila drugih osebnih ali gospodinjskih izdelkov ","Druge storitvene dejavnosti ","Druge storitvene dejavnosti ","Dejavnost pralnic in kemiènih èistilnic ","Dejavnost pralnic in kemiènih èistilnic ","Frizerska, kozmetièna in pedikerska dejavnost" ,"Frizerska dejavnost ","Kozmetièna in pedikerska dejavnost ","Pogrebna dejavnost ","Pogrebna dejavnost ","Dejavnosti za nego telesa ","Dejavnosti za nego telesa ","Druge storitvene dejavnosti, drugje nerazvršèene" ,"Druge storitvene dejavnosti, drugje nerazvršèene"];
+
+var countries = ["SLOVENIJA","Ajdovscina","Apace","Beltinci","Benedikt","Bistrica ob Sotli","Bled","Bloke","Bohinj","Borovnica","Bovec","Braslovce","Brda","Brezovica","Brezice","Cankova","Celje","Cerklje na Gorenjskem","Cerknica","Cerkno","Cerkvenjak","Cirkulane","crensovci","crna na Koroskem","crnomelj","Destrnik","Divaca","Dobje","Dobrepolje","Dobrna","Dobrova - Polhov Gradec","Dobrovnik","Dol pri Ljubljani","Dolenjske Toplice","Domzale","Dornava","Dravograd","Duplek","Gorenja vas - Poljane","Gorisnica","Gorje","Gornja Radgona","Gornji Grad","Gornji Petrovci","Grad","Grosuplje","Hajdina","Hoce - Slivnica","Hodos","Horjul","Hrastnik","Hrpelje - Kozina","Idrija","Ig","Ilirska Bistrica","Ivancna Gorica","Izola","Jesenice","Jezersko","Jursinci","Kamnik","Kanal","Kidricevo","Kobarid","Kobilje","Kocevje","Komen","Komenda","Koper","Kostanjevica na Krki","Kostel","Kozje","Kranj","Kranjska Gora","Krizevci","Krsko","Kungota","Kuzma","Lasko","Lenart","Lendava","Litija","Ljubljana","Ljubno","Ljutomer","Log - Dragomer","Logatec","Loska dolina","Loski Potok","Lovrenc na Pohorju","Luce","Lukovica","Majsperk","Makole","Maribor","Markovci","Medvode","Menges","Metlika","Mezica","Miklavz na Dravskem polju","Miren - Kostanjevica","Mirna Pec","Mislinja","Mokronog - Trebelno","Moravce","Moravske Toplice","Mozirje","Murska Sobota","Muta","Naklo","Nazarje","Nova Gorica","Novo mesto","Odranci","Oplotnica","Ormoz","Osilnica","Pesnica","Piran","Pivka","Podcetrtek","Podlehnik","Podvelka","Poljcane","Polzela","Postojna","Prebold","Preddvor","Prevalje","Ptuj","Puconci","Race - Fram","Radece","Radenci","Radlje ob Dravi","Radovljica","Ravne na Koroskem","Razkrizje","Recica ob Savinji","Rence - Vogrsko","Ribnica","Ribnica na Pohorju","Rogaska Slatina","Rogasovci","Rogatec","Ruse","Selnica ob Dravi","Semic","Sevnica","Sezana","Slovenj Gradec","Slovenska Bistrica","Slovenske Konjice","Sodrazica","Solcava","Sredisce ob Dravi","Starse","Straza","Sveta Ana","Sveta Trojica v Slov. goricah","Sveti Andraz v Slov. goricah","Sveti Jurij ob scavnici","Sveti Jurij v Slov. goricah","Sveti Tomaz","salovci","sempeter - Vrtojba","sencur","sentilj","sentjernej","sentjur","sentrupert","skocjan","skofja Loka","skofljica","smarje pri Jelsah","smarjeske Toplice","smartno ob Paki","smartno pri Litiji","sostanj","store","Tabor","Tisina","Tolmin","Trbovlje","Trebnje","Trnovska vas","Trzin","Trzic","Turnisce","Velenje","Velika Polana","Velike Lasce","Verzej","Videm","Vipava","Vitanje","Vodice","Vojnik","Vransko","Vrhnika","Vuzenica","Zagorje ob Savi","Zavrc","Zrece","zalec","zelezniki","zetale","ziri","zirovnica","zuzemberk"]
+
+/*initiate the autocomplete function on the "myInput" element, and pass along the countries array as possible autocomplete values:*/
+autocomplete(document.getElementById("ena"), countries);
+autocomplete(document.getElementById("dva"), countries);
+</script>
+
+
